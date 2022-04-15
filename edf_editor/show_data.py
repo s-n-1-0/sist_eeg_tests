@@ -1,8 +1,10 @@
 #%%
+from pandas import cut
 import pyedflib
 import matplotlib.pyplot as plt
 import matplotlib.mlab as mlab
 import numpy as np
+from scipy import signal
 from tabulate import tabulate
 EDF_PATH = "../edf_files/test2_0412_1.edf"
 CH_IDX = 1
@@ -32,15 +34,29 @@ for idx,label in enumerate(labels):
 plt.xlabel("Time(s)")
 plt.show()
 # %% 単純なスペクトログラム
+def getSpecgram(wav):
+    return 10 * np.log10(np.abs(signal.stft(wav,fs=250, detrend=False, window='hanning', noverlap=128)[2]))
+freqs,t,_ = signal.stft(ewavs[0],fs=250, detrend=False, window='hanning', noverlap=128)
+especs = np.array(list(map(getSpecgram,ewavs)))
 labels = edf.getSignalLabels()
-plt.title(f"{labels[CH_IDX]}ch")
-spec,freqs,t,*_ = plt.specgram(ewavs[CH_IDX], Fs=250, Fc=0, detrend=mlab.detrend_none, window=mlab.window_hanning, noverlap=128, cmap=None, xextent=None, pad_to=None, sides='default',  scale_by_freq=None, mode='default', scale='default')
-spec = 10 * np.log10(spec)
 #30hz>フィルター
-newFreqsLastIdx = np.where(freqs<=30)[-1][-1]
-newFreqs = freqs[:newFreqsLastIdx + 1]
+cutf = np.where((freqs >= 0) & (freqs<=30))
+newFreqsLastIdx = cutf[-1][-1]
+newFreqsFirstIdx = cutf[0][0]
+newFreqs = freqs[newFreqsFirstIdx:newFreqsLastIdx + 1]
+
+plt.figure()
+plt.title("avg ch")
+plt.pcolormesh(t,freqs,np.mean(especs,axis=0), shading='auto')
+plt.show()
+plt.title(f"{labels[CH_IDX]}ch")
+plt.pcolormesh(t,newFreqs,np.mean(especs[:,newFreqsFirstIdx:newFreqsLastIdx + 1,:],axis=0), shading='auto')
+plt.show()
 plt.figure()
 plt.title(f"{labels[CH_IDX]}ch")
-plt.pcolormesh(t,newFreqs,spec[:newFreqsLastIdx + 1,:], shading='auto')
+_ = plt.specgram(ewavs[CH_IDX], Fs=250, Fc=0, detrend=mlab.detrend_none, window=mlab.window_hanning, noverlap=128, cmap=None, xextent=None, pad_to=None, sides='default',  scale_by_freq=None, mode='default', scale='default')
+plt.figure()
+plt.title(f"{labels[CH_IDX]}ch")
+plt.pcolormesh(t,newFreqs,especs[CH_IDX,newFreqsFirstIdx:newFreqsLastIdx + 1,:], shading='auto')
 plt.show()
 # %%
