@@ -5,6 +5,8 @@ import matplotlib.mlab as mlab
 import numpy as np
 from tabulate import tabulate
 EDF_PATH = "../edf_files/test2_0412_1.edf"
+CH_IDX = 1
+
 edf = pyedflib.EdfReader(EDF_PATH)
 ewavs = []
 for idx,label in enumerate(edf.getSignalLabels()):
@@ -30,13 +32,15 @@ for idx,label in enumerate(labels):
 plt.xlabel("Time(s)")
 plt.show()
 # %% 単純なスペクトログラム
-spec,freqs,t,*_ = plt.specgram(ewavs[0], Fs=250, Fc=0, detrend=mlab.detrend_none, window=mlab.window_hanning, noverlap=128, cmap=None, xextent=None, pad_to=None, sides='default',  scale_by_freq=None, mode='default', scale='default')
+labels = edf.getSignalLabels()
+plt.title(f"{labels[CH_IDX]}ch")
+spec,freqs,t,*_ = plt.specgram(ewavs[CH_IDX], Fs=250, Fc=0, detrend=mlab.detrend_none, window=mlab.window_hanning, noverlap=128, cmap=None, xextent=None, pad_to=None, sides='default',  scale_by_freq=None, mode='default', scale='default')
 spec = 10 * np.log10(spec)
 #30hz>フィルター
 newFreqsLastIdx = np.where(freqs<=30)[-1][-1]
 newFreqs = freqs[:newFreqsLastIdx + 1]
-print(newFreqs)
 plt.figure()
+plt.title(f"{labels[CH_IDX]}ch")
 plt.pcolormesh(t,newFreqs,spec[:newFreqsLastIdx + 1,:], shading='auto')
 plt.show()
 # %%
