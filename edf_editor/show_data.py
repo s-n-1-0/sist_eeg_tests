@@ -9,12 +9,14 @@ EDF_PATH = "../edf_files/test2_0412_2.edf"
 CH_IDX = 0
 
 edf = pyedflib.EdfReader(EDF_PATH)
+signal_header0 = edf.getSignalHeader(0)
+fs = signal_header0['sample_rate']
 ewavs = []
 for idx,label in enumerate(edf.getSignalLabels()):
     ewavs.append(edf.readSignal(idx))
 def get_specgram(wav):
-    return np.abs(signal.stft(wav,fs=250, detrend=False, window='hanning', noverlap=128)[2])
-freqs,t,_ = signal.stft(ewavs[0],fs=250, detrend=False, window='hanning', noverlap=128)
+    return np.abs(signal.stft(wav,fs=fs, detrend=False, window='hanning', noverlap=128)[2])
+freqs,t,_ = signal.stft(ewavs[0],fs=fs, detrend=False, window='hanning', noverlap=128)
 especs = np.array(list(map(get_specgram,ewavs)))
 labels = edf.getSignalLabels()
 # %% edfプロパティを表示
@@ -23,13 +25,13 @@ signal_header = edf.getSignalHeader(0)
 props = {
     "Ch Size":f"{len(labels)}ch",
     "Data Size":edf.getNSamples()[0],
-    "Sample Rate":f"{signal_header['sample_rate']}hz",
+    "Sample Rate":f"{fs}hz",
     "time [DataSize/SampleRate]":f"{edf.getFileDuration()}s"
 }
 print(tabulate(props.items(),headers,tablefmt="grid",colalign=('center','center')))
 # %% edf波形データを表示
 signal_header = edf.getSignalHeader(0)
-times = np.arange(0,edf.getNSamples()[0]) / signal_header['sample_rate']
+times = np.arange(0,edf.getNSamples()[0]) / fs
 plt.figure(figsize=(7,len(labels)*2))
 for idx,label in enumerate(labels):
     plt.subplot(len(labels),1,idx + 1)
@@ -53,7 +55,7 @@ plt.pcolormesh(t,new_freqs,np.mean(log_especs[:,new_freqs_first_idx:new_freqs_la
 plt.show()
 plt.figure()
 plt.title(f"{labels[CH_IDX]}ch")
-_ = plt.specgram(ewavs[CH_IDX], Fs=250, Fc=0, detrend=mlab.detrend_none, window=mlab.window_hanning, noverlap=128, cmap=None, xextent=None, pad_to=None, sides='default',  scale_by_freq=None, mode='default', scale='default')
+_ = plt.specgram(ewavs[CH_IDX], Fs=fs, Fc=0, detrend=mlab.detrend_none, window=mlab.window_hanning, noverlap=128, cmap=None, xextent=None, pad_to=None, sides='default',  scale_by_freq=None, mode='default', scale='default')
 plt.figure()
 plt.title(f"{labels[CH_IDX]}ch")
 plt.pcolormesh(t,new_freqs,log_especs[CH_IDX,new_freqs_first_idx:new_freqs_last_idx + 1,:], shading='auto')
