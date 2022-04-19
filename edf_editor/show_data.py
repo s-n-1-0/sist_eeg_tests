@@ -1,4 +1,5 @@
 #%%
+import lib.spec as spec
 import pyedflib
 import matplotlib.pyplot as plt
 import matplotlib.mlab as mlab
@@ -14,10 +15,8 @@ fs = signal_header0['sample_rate']
 ewavs = []
 for idx,label in enumerate(edf.getSignalLabels()):
     ewavs.append(edf.readSignal(idx))
-def get_specgram(wav):
-    return np.abs(signal.stft(wav,fs=fs, detrend=False, window='hanning', noverlap=128)[2])
 freqs,t,_ = signal.stft(ewavs[0],fs=fs, detrend=False, window='hanning', noverlap=128)
-especs = np.array(list(map(get_specgram,ewavs)))
+especs = spec.get_spectrograms(ewavs,fs)
 labels = edf.getSignalLabels()
 # %% edfプロパティを表示
 headers = ["Prop", "Value"]
