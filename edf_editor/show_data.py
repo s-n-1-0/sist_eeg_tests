@@ -1,5 +1,6 @@
 #%%
 import lib.spec as spec
+import lib.edf as myedf
 import pyedflib
 import matplotlib.pyplot as plt
 import matplotlib.mlab as mlab
@@ -12,9 +13,7 @@ CH_IDX = 0
 edf = pyedflib.EdfReader(EDF_PATH)
 signal_header0 = edf.getSignalHeader(0)
 fs = signal_header0['sample_rate']
-ewavs = []
-for idx,label in enumerate(edf.getSignalLabels()):
-    ewavs.append(edf.readSignal(idx))
+ewavs = myedf.get_all_signals(edf)
 freqs,t,_ = signal.stft(ewavs[0],fs=fs, detrend=False, window='hanning', noverlap=128)
 especs = spec.get_spectrograms(ewavs,fs)
 labels = edf.getSignalLabels()
