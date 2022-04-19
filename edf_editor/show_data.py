@@ -11,8 +11,7 @@ EDF_PATH = "../edf_files/test2_0412_2.edf"
 CH_IDX = 0
 
 edf = pyedflib.EdfReader(EDF_PATH)
-signal_header0 = edf.getSignalHeader(0)
-fs = signal_header0['sample_rate']
+fs = myedf.get_fs(edf)
 ewavs = myedf.get_all_signals(edf)
 freqs,t,_ = signal.stft(ewavs[0],fs=fs, detrend=False, window='hanning', noverlap=128)
 especs = spec.get_spectrograms(ewavs,fs)
