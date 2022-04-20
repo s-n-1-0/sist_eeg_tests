@@ -1,0 +1,1 @@
+dir /s /b /a-d *.bmp> paths.txt
