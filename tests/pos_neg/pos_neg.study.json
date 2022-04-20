@@ -573,53 +573,6 @@
           "version": "4.3.1",
           "originX": "center",
           "originY": "center",
-          "left": 0,
-          "top": -25,
-          "width": 160,
-          "height": 36.16,
-          "fill": "black",
-          "stroke": null,
-          "strokeWidth": 1,
-          "strokeDashArray": null,
-          "strokeLineCap": "butt",
-          "strokeDashOffset": 0,
-          "strokeLineJoin": "round",
-          "strokeUniform": false,
-          "strokeMiterLimit": 4,
-          "scaleX": 1,
-          "scaleY": 1,
-          "angle": 0,
-          "flipX": false,
-          "flipY": false,
-          "opacity": 1,
-          "shadow": null,
-          "visible": true,
-          "backgroundColor": "",
-          "fillRule": "nonzero",
-          "paintFirst": "fill",
-          "globalCompositeOperation": "source-over",
-          "skewX": 0,
-          "skewY": 0,
-          "text": "ここに画像",
-          "fontSize": 32,
-          "fontWeight": "normal",
-          "fontFamily": "sans-serif",
-          "fontStyle": "normal",
-          "lineHeight": 1.16,
-          "underline": false,
-          "overline": false,
-          "linethrough": false,
-          "textAlign": "center",
-          "textBackgroundColor": "",
-          "charSpacing": 0,
-          "id": "132",
-          "styles": {}
-        },
-        {
-          "type": "i-text",
-          "version": "4.3.1",
-          "originX": "center",
-          "originY": "center",
           "left": -350,
           "top": 250,
           "width": 21.69,
@@ -708,6 +661,47 @@
           "charSpacing": 0,
           "id": "134",
           "styles": {}
+        },
+        {
+          "type": "image",
+          "version": "4.3.1",
+          "originX": "center",
+          "originY": "center",
+          "left": 0,
+          "top": 0,
+          "width": 640,
+          "height": 480,
+          "fill": "black",
+          "stroke": null,
+          "strokeWidth": 0,
+          "strokeDashArray": null,
+          "strokeLineCap": "butt",
+          "strokeDashOffset": 0,
+          "strokeLineJoin": "round",
+          "strokeUniform": false,
+          "strokeMiterLimit": 4,
+          "scaleX": 1,
+          "scaleY": 1,
+          "angle": 0,
+          "flipX": false,
+          "flipY": false,
+          "opacity": 1,
+          "shadow": null,
+          "visible": true,
+          "backgroundColor": "",
+          "fillRule": "nonzero",
+          "paintFirst": "fill",
+          "globalCompositeOperation": "source-over",
+          "skewX": 0,
+          "skewY": 0,
+          "cropX": 0,
+          "cropY": 0,
+          "id": "44",
+          "src": "${ this.files[this.parameters.file_name] }",
+          "crossOrigin": null,
+          "filters": [],
+          "naturalWidth": 640,
+          "naturalHeight": 480
         }
       ],
       "viewport": [
@@ -743,7 +737,7 @@
         }
       ],
       "title": "goodbad",
-      "_tab": "Behavior"
+      "_tab": "Files"
     },
     "8": {
       "id": "8",
@@ -786,54 +780,13 @@
       "templateParameters": {
         "columns": [
           {
-            "name": "good",
-            "type": "string"
-          },
-          {
-            "name": "bad",
+            "name": "file_name",
             "type": "string"
           }
         ],
         "rows": [
           [
-            "a",
-            ""
-          ],
-          [
-            "a",
-            ""
-          ],
-          [
-            "aa",
-            ""
-          ],
-          [
-            "a",
-            ""
-          ],
-          [
-            "a",
-            ""
-          ],
-          [
-            "a",
-            ""
-          ],
-          [
-            "a",
-            ""
-          ],
-          [
-            "a",
-            ""
-          ],
-          [
-            "a",
-            ""
-          ],
-          [
-            "a",
-            ""
+            "N010.bmp"
           ]
         ]
       },
@@ -863,7 +816,8 @@
           "code": ""
         }
       ],
-      "title": "Loop"
+      "title": "Loop",
+      "_tab": "Files"
     },
     "10": {
       "id": "10",
@@ -945,7 +899,7 @@
         }
       ],
       "title": "wait",
-      "_tab": "Behavior",
+      "_tab": "Files",
       "timeout": "1500"
     },
     "11": {
@@ -1050,7 +1004,7 @@
         }
       ],
       "metadata": {
-        "title": "Kai-Hukai",
+        "title": "Pos_Neg",
         "description": "",
         "repository": "",
         "contributors": ""
