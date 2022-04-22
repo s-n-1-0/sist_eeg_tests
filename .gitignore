@@ -1,2 +1,5 @@
 edf_files/*
 **/__pycache__/**
+**/*.png
+**/*.jpg
+**/*.bmp
