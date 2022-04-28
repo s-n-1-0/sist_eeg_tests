@@ -12,14 +12,14 @@ import pandas as pd
 from datetime import datetime
 import math
 from scipy import signal
-# %% config
+# %% 【必須1】config
 EDF_PATH = "edf_files/pos_neg/posneg_0421_1.edf"
 CSV_PATH = "tests/pos_neg/pos_neg--2022-04-21--16_14_07.csv"
 IMG_DIR_PATH = "tests/pos_neg/images"
 POS_GROUP_NAMES = ["B","P","Q"]
 NEG_GROUP_NAMES = ["A","H","Z"]
 NEU_GROUP_NAMES = ["N"]
-# %% edfファイルの取得
+# %% 【必須2】edfファイルの取得
 edf = pyedflib.EdfReader(EDF_PATH)
 fs = edf_viewer.get_fs(edf)#サンプリングレート
 annos = edf_viewer.get_annotations(edf)
@@ -73,14 +73,34 @@ run_times = working_range_csv[:,5] / 1000 #秒に変換
 end_times = working_range_csv[:,4] / 1000 #秒に変換
 #開始アノテーションを0秒とした値
 start_anno = annos[1] # = 'sync'アノテーション
+#run_time[0]を開始点とするためlab.js内オフセット
 offset_run_times = np.asarray([rt - run_times[0] for rt in run_times])
+offset_end_times = np.asarray([et - run_times[0] for et in end_times])
 offset_run_time_indexes = [math.floor(ort * fs) for ort in offset_run_times]
+offset_end_time_indexes = [math.floor(ort * fs) for ort in offset_end_times]
+#eeg基準に修正
 fixed_offset_run_times = np.asarray(offset_run_times) + start_anno[1]
 fixed_offset_run_time_indexes = np.asarray(offset_run_time_indexes) + start_anno[3]
+fixed_offset_end_times = np.asarray(offset_end_times) + start_anno[1]
+fixed_offset_end_time_indexes = np.asarray(offset_end_time_indexes) + start_anno[3]
 
-# %% 実験結果(goodbad回答)をプロット
-freqs,t,especs = spec.get_spectrograms(all_signals,fs)
-log_especs = 10 * np.log10(especs)
+#各回答ごとにeegをスプリット
+freqs,t,all_specs = edf_viewer.spec.get_spectrograms(all_signals,fs)
+ans_trange_indexes = [np.where((t>=rt) & (t<=et)) for rt,et in zip(fixed_offset_run_times,fixed_offset_end_times)]
+ans_not_trange_indexes = [np.where((t<rt) | (t>et)) for rt,et in zip(fixed_offset_run_times,fixed_offset_end_times)]
+def zero_padding_spec(sp:np.ndarray,zero_range:np.ndarray):
+    """
+    スペクトログラムの指定した範囲を0埋めします。
+    """
+    new_sp = np.copy(sp)
+    new_sp[:,zero_range] = 0
+    return new_sp
+ans_specs = [[sp[:,at] for sp in all_specs] for at in ans_trange_indexes]
+ans_padding_specs = [[zero_padding_spec(sp,at) for sp in all_specs] for at in ans_not_trange_indexes]
+#ans_ch_especs 
+# %% 【前のセル実行必須】実験結果(goodbad回答)をプロット
+
+log_especs = 10 * np.log10(all_specs)
 plt.figure()
 plt.title("avg ch (ans line)")
 plt.pcolormesh(t,freqs,np.mean(log_especs,axis=0), shading='auto')
