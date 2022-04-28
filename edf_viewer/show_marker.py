@@ -26,7 +26,7 @@ view_annotations = [(name,time,index) for name,time,_,index in annotations]
 print(tabulate(view_annotations,["Name","Time(s)","Index"],tablefmt="grid",colalign=('center','center')))
 # %% 【前のセル実行必須】平均波形にアノテーションを表示します。
 freqs,t,_ = signal.stft(ewavs[0],fs=fs, detrend=False, window='hanning', noverlap=128)
-especs = spec.get_spectrograms(ewavs,fs)
+especs = spec.get_spectrograms(ewavs,fs)[2]
 log_especs = 10 * np.log10(especs)
 plt.figure()
 plt.title("avg ch")

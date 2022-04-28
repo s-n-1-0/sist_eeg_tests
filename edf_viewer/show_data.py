@@ -14,7 +14,7 @@ edf = pyedflib.EdfReader(EDF_PATH)
 fs = myedf.get_fs(edf)
 ewavs = myedf.get_all_signals(edf)
 freqs,t,_ = signal.stft(ewavs[0],fs=fs, detrend=False, window='hanning', noverlap=128)
-especs = spec.get_spectrograms(ewavs,fs)
+especs = spec.get_spectrograms(ewavs,fs)[2]
 labels = edf.getSignalLabels()
 # %% edfプロパティを表示
 headers = ["Prop", "Value"]

@@ -79,8 +79,7 @@ fixed_offset_run_times = np.asarray(offset_run_times) + start_anno[1]
 fixed_offset_run_time_indexes = np.asarray(offset_run_time_indexes) + start_anno[3]
 
 # %% 実験結果(goodbad回答)をプロット
-freqs,t,_ = signal.stft(all_signals[0],fs=fs, detrend=False, window='hanning', noverlap=128)
-especs = spec.get_spectrograms(all_signals,fs)
+freqs,t,especs = spec.get_spectrograms(all_signals,fs)
 log_especs = 10 * np.log10(especs)
 plt.figure()
 plt.title("avg ch (ans line)")
