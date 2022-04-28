@@ -57,12 +57,20 @@ plot_groups("Neutral Images",exs_groups,NEU_GROUP_NAMES)
 # %% edfからeegを取得し実験部分以外を切り捨て
 all_signals = edf_viewer.get_all_signals(edf)
 #use_colsによって実験開始までの行データをスキップ
-working_range_csv = pd.read_csv(CSV_PATH,skiprows=4,usecols=[0,3,7,8,11,12]).values
+"""
+0:title -> 0
+3:timestamp -> 1
+7:response -> 2
+8:time_commit -> 3
+11:time_end -> 4
+13:time_run -> 5
+"""
+working_range_csv = pd.read_csv(CSV_PATH,skiprows=4,usecols=[0,3,7,8,11,13]).values
 #シークエンスタイトルを削除
 working_range_csv = working_range_csv[np.where(working_range_csv[:,0] == 'goodbad')]
 goodbad_anss = working_range_csv[:,3]
-run_times = working_range_csv[:,4] / 1000 #秒に変換
-end_times = working_range_csv[:,5] / 1000 #秒に変換
+run_times = working_range_csv[:,5] / 1000 #秒に変換
+end_times = working_range_csv[:,4] / 1000 #秒に変換
 #開始アノテーションを0秒とした値
 start_anno = annos[1] # = 'sync'アノテーション
 offset_run_times = np.asarray([rt - run_times[0] for rt in run_times])
