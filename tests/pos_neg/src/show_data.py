@@ -60,6 +60,7 @@ all_signals = edf_viewer.get_all_signals(edf)
 working_range_csv = pd.read_csv(CSV_PATH,skiprows=4,usecols=[0,3,7,8,11,12]).values
 #シークエンスタイトルを削除
 working_range_csv = working_range_csv[np.where(working_range_csv[:,0] == 'goodbad')]
+goodbad_anss = working_range_csv[:,3]
 run_times = working_range_csv[:,4] / 1000 #秒に変換
 end_times = working_range_csv[:,5] / 1000 #秒に変換
 #開始アノテーションを0秒とした値
@@ -68,5 +69,26 @@ offset_run_times = np.asarray([rt - run_times[0] for rt in run_times])
 offset_run_time_indexes = [math.floor(ort * fs) for ort in offset_run_times]
 fixed_offset_run_times = np.asarray(offset_run_times) + start_anno[1]
 fixed_offset_run_time_indexes = np.asarray(offset_run_time_indexes) + start_anno[3]
+
+# %% 実験結果(goodbad回答)をプロット
+freqs,t,_ = signal.stft(all_signals[0],fs=fs, detrend=False, window='hanning', noverlap=128)
+especs = spec.get_spectrograms(all_signals,fs)
+log_especs = 10 * np.log10(especs)
+plt.figure()
+plt.title("avg ch (ans line)")
+plt.pcolormesh(t,freqs,np.mean(log_especs,axis=0), shading='auto')
+_,r,*_ = start_anno
+plt.vlines(r, 0, freqs[-1],colors='#FF4C4C',linestyle='dashed', linewidth=3)
+def ans2color(ans:str):
+    if ans == "good":
+        return "#FF4C4C"
+    elif ans == "bad":
+        return "#4c8bff"
+    else:
+        return "white"
+for ans,fot in zip(goodbad_anss,fixed_offset_run_times):
+    plt.vlines(fot, 0, freqs[-1],colors=ans2color(ans),linestyle='dashed', linewidth=3)
+plt.show()
+plt.show()
 
 # %%
