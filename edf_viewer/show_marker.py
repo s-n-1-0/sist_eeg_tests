@@ -36,8 +36,8 @@ log_especs = 10 * np.log10(especs)
 plt.figure()
 plt.title("avg ch")
 plt.pcolormesh(t,freqs,np.mean(log_especs,axis=0), shading='auto')
-for _,t,_ in rows:
-    plt.vlines(t, 0, freqs[-1],colors='#FF4C4C',linestyle='dashed', linewidth=3)
+for _,r,_ in rows:
+    plt.vlines(r, 0, freqs[-1],colors='#FF4C4C',linestyle='dashed', linewidth=3)
 plt.show()
 plt.show()
 # %%
