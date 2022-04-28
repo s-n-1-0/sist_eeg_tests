@@ -7,7 +7,7 @@ import matplotlib.mlab as mlab
 import numpy as np
 from scipy import signal
 from tabulate import tabulate
-EDF_PATH = "../edf_files/test2_0412_2.edf"
+EDF_PATH = "edf_files/test2_0412_2.edf"
 CH_IDX = 0
 
 edf = pyedflib.EdfReader(EDF_PATH)

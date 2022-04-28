@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import matplotlib.mlab as mlab
 import numpy as np
 from tabulate import tabulate
-EDF_PATH = "../edf_files/test3_0419.edf"
+EDF_PATH = "edf_files/pos_neg/posneg_0421_1.edf"
 CH_IDX = 0
 
 edf = pyedflib.EdfReader(EDF_PATH)
