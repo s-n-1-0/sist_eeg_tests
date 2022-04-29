@@ -66,7 +66,7 @@ all_signals = edf_viewer.get_all_signals(edf)
 13:time_run -> 5
 """
 working_range_csv = pd.read_csv(CSV_PATH,skiprows=4,usecols=[0,3,7,8,11,13]).values
-#シークエンスタイトルを削除
+#goodbad回答以外を削除
 working_range_csv = working_range_csv[np.where(working_range_csv[:,0] == 'goodbad')]
 goodbad_anss = working_range_csv[:,3]
 run_times = working_range_csv[:,5] / 1000 #秒に変換
