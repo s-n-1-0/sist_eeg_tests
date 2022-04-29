@@ -15,6 +15,7 @@ from scipy import signal
 EDF_PATH = "edf_files/pos_neg/posneg_0421_1.edf"
 CSV_PATH = "tests/pos_neg/pos_neg--2022-04-21--16_14_07.csv"
 IMG_DIR_PATH = "tests/pos_neg/images"
+RESPONDENT_PRIORITY = True
 POS_GROUP_NAMES = ["B","P","Q"]
 NEG_GROUP_NAMES = ["A","H","Z"]
 NEU_GROUP_NAMES = ["N"]
@@ -59,15 +60,26 @@ all_signals = edf_viewer.get_all_signals(edf)
 """
 0:title -> 0
 3:timestamp -> 1
-7:response -> 2
-8:time_commit -> 3
-11:time_end -> 4
-13:time_run -> 5
+6:file_name -> 2
+7:response -> 3
+8:time_commit -> 4
+11:time_end -> 5
+13:time_run -> 6
 """
 working_range_csv = pd.read_csv(CSV_PATH,skiprows=4,usecols=[0,3,7,8,11,13]).values
 #goodbad回答以外を削除
 working_range_csv = working_range_csv[np.where(working_range_csv[:,0] == 'goodbad')]
+file_names = working_range_csv[:,2]
 goodbad_anss = working_range_csv[:,3]
+if not RESPONDENT_PRIORITY:
+    def group2goodbad(group:str):
+        if POS_GROUP_NAMES.count(group) > 0:
+            return "good"
+        elif NEG_GROUP_NAMES.count(group) > 0:
+            return "bad"
+        else:
+            return "none"
+    goodbad_anss = [group2goodbad(fname[0]) for fname in file_names]
 run_times = working_range_csv[:,5] / 1000 #秒に変換
 end_times = working_range_csv[:,4] / 1000 #秒に変換
 #開始アノテーションを0秒とした値
