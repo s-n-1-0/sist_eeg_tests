@@ -86,8 +86,8 @@ fixed_offset_end_time_indexes = np.asarray(offset_end_time_indexes) + start_anno
 
 #各回答ごとにeegをスプリット
 freqs,t,all_specs = edf_viewer.spec.get_spectrograms(all_signals,fs)
-ans_trange_indexes = [np.where((t>=rt) & (t<=et)) for rt,et in zip(fixed_offset_run_times,fixed_offset_end_times)]
-ans_not_trange_indexes = [np.where((t<rt) | (t>et)) for rt,et in zip(fixed_offset_run_times,fixed_offset_end_times)]
+ans_trange_indexes = [np.where((t>=rt) & (t<=et))[0] for rt,et in zip(fixed_offset_run_times,fixed_offset_end_times)]
+ans_not_trange_indexes = [np.where((t<rt) | (t>et))[0] for rt,et in zip(fixed_offset_run_times,fixed_offset_end_times)]
 def zero_padding_spec(sp:np.ndarray,zero_range:np.ndarray):
     """
     スペクトログラムの指定した範囲を0埋めします。
@@ -95,7 +95,7 @@ def zero_padding_spec(sp:np.ndarray,zero_range:np.ndarray):
     new_sp = np.copy(sp)
     new_sp[:,zero_range] = 0
     return new_sp
-ans_specs = [[sp[:,at] for sp in all_specs] for at in ans_trange_indexes]
+ans_specs = [all_specs[...,at] for at in ans_trange_indexes]
 ans_padding_specs = [[zero_padding_spec(sp,at) for sp in all_specs] for at in ans_not_trange_indexes]
 #ans_ch_especs 
 # %% 【前のセル実行必須】実験結果(goodbad回答)をプロット
