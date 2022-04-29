@@ -7,7 +7,6 @@ from matplotlib import pyplot as plt
 from itertools import groupby
 import pyedflib
 import edf_viewer
-from edf_viewer import spec
 import pandas as pd
 from datetime import datetime
 import math
@@ -118,4 +117,56 @@ for ans,fot in zip(goodbad_anss,fixed_offset_run_times):
 plt.show()
 plt.show()
 
+# %% 各回答ごとに波形情報抽出
+alpha_freq_indexes,alpha_freqs = edf_viewer.pass_range.pass_range(freqs,8,13)
+beta_freq_indexes,beta_freqs = edf_viewer.pass_range.pass_range(freqs,13,24)
+ans_alpha_specs = []
+ans_beta_specs = []
+# a,b,a/bのタプル
+total_results = []
+good_results = []
+bad_results = []
+for ans,asps in zip(goodbad_anss,ans_specs): # aspsize= ch x freqs x t
+    asp = asps[:,alpha_freq_indexes,:]
+    bsp = asps[:,beta_freq_indexes,:]
+    ans_alpha_specs.append(asp)
+    ans_beta_specs.append(bsp)
+    a = np.mean(asp)
+    b = np.mean(bsp)
+    raito = b / a
+    total_results.append((a,b,raito))
+    if ans == "good":
+        good_results.append((a,b,raito))
+    elif ans == "bad":
+        bad_results.append((a,b,raito))
+    #print(f"{ans}:{np.mean(bsp)/np.mean(asp)}")
+
+print(f"最終平均 good:{np.mean([tr[2] for tr in good_results])}, bad:{np.mean([tr[2] for tr in bad_results])}")
+""" 各回答のα帯のスペクトログラム(表示できるけど拡大しすぎてよくわからなくなってる)
+for ati,aasp in zip(ans_trange_indexes,ans_alpha_specs):
+    at = t[ati]
+    log_especs = 10 * np.log10(aasp)
+    plt.figure()
+    plt.title("avg ch (ans line)")
+    print(log_especs.shape)
+    plt.pcolormesh(at,alpha_freqs,np.mean(log_especs,axis=0), shading='flat')
+    plt.show()
+    plt.show()
+"""
+plt.title("avg ch : α,β,β/α")
+plt.plot(range(len(goodbad_anss)),[tr[0] for tr in total_results],label="α")
+plt.plot(range(len(goodbad_anss)),[tr[1] for tr in total_results],label="β")
+plt.plot(range(len(goodbad_anss)),[tr[2] for tr in total_results],label="β/α")
+plt.xlabel("count")
+plt.legend()
+def ans2color(ans:str):
+    if ans == "good":
+        return "#FF4C4C"
+    elif ans == "bad":
+        return "#4c8bff"
+    else:
+        return "black"
+for idx,ans in enumerate(goodbad_anss):
+    plt.vlines(idx, 0, 5,colors=ans2color(ans),alpha = 0.2,linestyle='dashed', linewidth=3)
+plt.show()
 # %%
