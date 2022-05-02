@@ -10,7 +10,7 @@ from tabulate import tabulate
 from edf_viewer import pass_range
 EDF_PATH = "edf_files/test2_0412_2.edf"
 CH_IDX = 0
-
+timeRange = [0,60]#秒
 edf = pyedflib.EdfReader(EDF_PATH)
 fs = myedf.get_fs(edf)
 ewavs = myedf.get_all_signals(edf)
@@ -55,7 +55,7 @@ plt.title(f"{labels[CH_IDX]}ch")
 plt.pcolormesh(t,new_freqs,log_especs[CH_IDX,cutf,:], shading='auto')
 plt.show()
 # %%  α波、β波グラフをプロット
-cutt,new_time = pass_range.pass_range(t,0,60) #指定した範囲で集計
+cutt,new_time = pass_range.pass_range(t,timeRange[0],timeRange[1]) #指定した範囲で集計
 cutf_alpha,alpha_freqs= pass_range.pass_range(freqs,8,13)
 cutf_beta,beta_feqs= pass_range.pass_range(freqs,13,25)
 alpha_power = np.mean(especs[CH_IDX,cutf_alpha,:][:,cutt],axis=0)
