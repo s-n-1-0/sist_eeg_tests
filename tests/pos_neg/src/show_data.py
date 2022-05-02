@@ -11,6 +11,7 @@ import pandas as pd
 from datetime import datetime
 import math
 from scipy import signal
+from tabulate import tabulate
 # %% 【必須1】config
 EDF_PATH = "edf_files/pos_neg/posneg_0421_1.edf"
 CSV_PATH = "tests/pos_neg/pos_neg--2022-04-21--16_14_07.csv"
@@ -138,6 +139,7 @@ ans_beta_specs = []
 total_results = []
 good_results = []
 bad_results = []
+none_results = []
 for ans,asps in zip(goodbad_anss,ans_specs): # aspsize= ch x freqs x t
     asp = asps[:,alpha_freq_indexes,:]
     bsp = asps[:,beta_freq_indexes,:]
@@ -151,9 +153,18 @@ for ans,asps in zip(goodbad_anss,ans_specs): # aspsize= ch x freqs x t
         good_results.append((a,b,raito))
     elif ans == "bad":
         bad_results.append((a,b,raito))
+    elif ans == "none":
+        none_results.append((a,b,raito))
     #print(f"{ans}:{np.mean(bsp)/np.mean(asp)}")
+def get_mean_resuls(results:list):
+    return (np.mean([r[0] for r in results]),np.mean([r[1] for r in results]),np.mean([r[2] for r in results]))
+headers = ["Group", "α","β","β/α"]
+mean_good_results = get_mean_resuls(good_results)
+mean_bad_results = get_mean_resuls(bad_results)
+mean_none_results = get_mean_resuls(none_results)
 
-print(f"最終平均 good:{np.mean([tr[2] for tr in good_results])}, bad:{np.mean([tr[2] for tr in bad_results])}")
+print("チャンネル平均")
+print(tabulate([("Good",) + mean_good_results,("Bad",) + mean_bad_results,("None",) + mean_none_results],headers,tablefmt="grid",colalign=('center','center')))
 """ 各回答のα帯のスペクトログラム(表示できるけど拡大しすぎてよくわからなくなってる)
 for ati,aasp in zip(ans_trange_indexes,ans_alpha_specs):
     at = t[ati]
