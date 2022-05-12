@@ -10,6 +10,11 @@ def get_all_signals(edf:pyedflib.EdfReader):
         ewavs.append(edf.readSignal(idx))
     return ewavs
 
+def get_channel_length(edf:pyedflib.EdfReader):
+    """
+    チャンネル数を取得します。
+    """
+    return len(edf.getSignalHeaders())
 def get_fs(edf:pyedflib.EdfReader):
     """
     edfファイルからサンプリングレートを取得します。
