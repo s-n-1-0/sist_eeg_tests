@@ -1,3 +1,4 @@
+from pyclbr import Function
 import pyedflib
 import math
 import edf_viewer
@@ -32,9 +33,10 @@ def get_annotations(edf:pyedflib.EdfReader):
     rows:list[tuple[str,float,Any,int]] = [(name,time,duration,math.floor(time * fs))for time,duration,name in zip(annotations[0],annotations[1],annotations[2])]
     return rows
 
-def copy(redf:pyedflib.EdfReader,copy_path:str):
+def copy(redf:pyedflib.EdfReader,copy_path:str,copied_func:Function = None):
     """
     redfの内容をコピーパスへコピーします。
+    copied_funcの第一引数にredf,第二引数にwedfを返します。
     """
     ch = get_channel_length(redf)
     with pyedflib.EdfWriter(copy_path,ch) as wedf:
@@ -46,6 +48,7 @@ def copy(redf:pyedflib.EdfReader,copy_path:str):
         wedf.writeSamples(get_all_signals(redf))
         for i,_ in enumerate(annos[0]):
             wedf.writeAnnotation(annos[0][i],annos[1][i],annos[2][i])
-
+        if not (copied_func is None):
+            copied_func(redf,wedf)
         wedf.close()
     return ch
