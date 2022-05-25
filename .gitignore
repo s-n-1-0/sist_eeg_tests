@@ -5,3 +5,5 @@ edf_files/*
 **/*.jpg
 **/*.bmp
 **/*.csv
+**/*.npy
+**/*.npz
