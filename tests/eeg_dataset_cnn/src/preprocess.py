@@ -51,9 +51,14 @@ valid_x = concatenate(train_x[-5:],interpolate=True)
 valid_y = concatenate(train_y[-5:],interpolate=False)
 train_x = concatenate(train_x[:-5],interpolate=True)
 train_y  = concatenate(train_y[:-5],interpolate=False)
+
 train_x = norm(train_x)
 valid_x = norm(valid_x)
 
+train_x = train_x.T
+train_y = train_y.T
+valid_x = valid_x.T
+valid_y = valid_y.T
 # %% save
 np.savez_compressed(f"{work_path}/tmp/prep.npz",train_x = train_x,train_y = train_y,valid_x=valid_x,valid_y=valid_y)
 # %%
