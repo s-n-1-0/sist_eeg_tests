@@ -12,8 +12,8 @@ work_path = settings["work_path"]
 def read_csv(x_path:str, y_path:str):
     xcsv = pd.read_csv(x_path)
     ycsv = pd.read_csv(y_path)
-    x = xcsv.iloc[:,1:].values
-    y = ycsv.iloc[:,1:].values
+    x = xcsv.iloc[:,1:].values.astype(np.float32)
+    y = ycsv.iloc[:,1:].values.astype(np.float32)
     return x, y
 def read_csv_in_folder(folder_path:str,filename:str):
     data_path = os.path.join(folder_path, filename)
