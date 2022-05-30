@@ -47,13 +47,17 @@ def norm(data:np.ndarray)->np.ndarray:
 train_x = [t[0] for t in trainset]
 train_y = [t[1] for t in trainset]
 #検証用を分離
-valid_x = concatenate(train_x[-5:],interpolate=True)
-valid_y = concatenate(train_y[-5:],interpolate=False)
-train_x = concatenate(train_x[:-5],interpolate=True)
-train_y  = concatenate(train_y[:-5],interpolate=False)
+valid_x = concatenate(train_x[-3:],interpolate=True)
+valid_y = concatenate(train_y[-3:],interpolate=False)
+test_x = concatenate(train_x[:2],interpolate=True)
+test_y = concatenate(train_y[:2],interpolate=False)
+train_x = concatenate(train_x[2:-3],interpolate=True)
+train_y  = concatenate(train_y[2:-3],interpolate=False)
+
 train_x = norm(train_x)
 valid_x = norm(valid_x)
+test_x = norm(test_x)
 
 # %% save
-np.savez_compressed(f"{work_path}/tmp/prep.npz",train_x = train_x,train_y = train_y,valid_x=valid_x,valid_y=valid_y)
+np.savez_compressed(f"{work_path}/tmp/prep.npz",train_x = train_x,train_y = train_y,valid_x=valid_x,valid_y=valid_y,test_x=test_x,test_y=test_y)
 # %%
