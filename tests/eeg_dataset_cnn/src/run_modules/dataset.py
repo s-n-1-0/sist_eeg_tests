@@ -13,11 +13,11 @@ class EEGDataset():
             self.valid_y = prep_dataset["valid_y"]
     
     def _eeg_random_generater(self,x:np.ndarray,y:np.ndarray,signal_size:int,batch_size:int):
-        steps = (x.shape[1] // signal_size) // batch_size
+        steps = (x.shape[0] // signal_size) // batch_size
         def get_range():
             end = np.random.randint(0,(steps - 1) * signal_size) + signal_size
             start = end - signal_size
-            while(np.all(y[:,end] == 0)):
+            while(np.all(y[end,:] == 0)):
                 end = np.random.randint(0,(steps - 1) * signal_size) + signal_size
                 start = end - signal_size
             return (start,end)
@@ -25,7 +25,7 @@ class EEGDataset():
         while count < steps:
             count += 1
             ranges = [get_range() for _ in range(batch_size)]
-            yield np.array([x[:,start:end].T for start,end in ranges]),np.array([y[:,end] for _ ,end in ranges])
+            yield np.array([x[start:end,:] for start,end in ranges]),np.array([y[end,:] for _ ,end in ranges])
 
     def make_train_generator(self,signal_size:int,batch_size:int):
         return self._eeg_random_generater(self.train_x,self.train_y,signal_size=signal_size,batch_size=batch_size)
