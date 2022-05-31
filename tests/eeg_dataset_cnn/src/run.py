@@ -13,9 +13,9 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__),"tests/eeg_dataset_cnn/src"))
 from run_modules import Maxout,EEGDataset,total_acc,binary_acc,recall,precision
 
-EPOCHS = 40
+EPOCHS = 100
 SIGNAL_SIZE = 4096
-BATCH_SIZE = 32
+BATCH_SIZE = 4
 # %% データセットの読み込み
 dataset = EEGDataset()
 dataset.read_dataset()
