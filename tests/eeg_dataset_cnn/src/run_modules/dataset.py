@@ -5,7 +5,7 @@ class EEGDataset():
         with open("tests/eeg_dataset_cnn/src/settings.json","r") as json_file:
             settings = json.load(json_file)
             work_path =  settings["work_path"]
-            npz_path = f"{work_path}/tmp/prep.npz"
+            npz_path = f"{work_path}/dest/prep.npz"
             prep_dataset = np.load(npz_path)
             self.train_x = prep_dataset["train_x"]
             self.train_y = prep_dataset["train_y"]
