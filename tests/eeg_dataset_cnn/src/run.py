@@ -3,6 +3,8 @@ import json
 import numpy as np
 import tensorflow as tf
 
+from datetime import datetime
+import pandas as pd
 from keras import Model,callbacks,optimizers,layers,backend as K
 from tensorflow.python.framework import constant_op
 from tensorflow.python.ops import clip_ops,math_ops
@@ -104,5 +106,16 @@ history = model.fit(tgen,
             validation_data= vgen,
             )
 model.summary()
+
+# %% モデルと履歴の保存
+with open("tests/eeg_dataset_cnn/src/settings.json","r") as json_file:
+    settings = json.load(json_file)
+    work_path =  settings["work_path"]
+dtnow = datetime.now()
+nowstr = dtnow.strftime("%Y_%m_%d_%H_%M")
+save_path = f"{work_path}/tmp/model_{nowstr}"
+model.save(save_path,save_format="tf")
+hist_df = pd.DataFrame(history.history)
+hist_df.to_csv(f"{save_path}_history.csv")
 
 # %%
