@@ -113,7 +113,7 @@ with open("tests/eeg_dataset_cnn/src/settings.json","r") as json_file:
     work_path =  settings["work_path"]
 dtnow = datetime.now()
 nowstr = dtnow.strftime("%Y_%m_%d_%H_%M")
-save_path = f"{work_path}/tmp/model_{nowstr}"
+save_path = f"{work_path}/dest/model_{nowstr}"
 model.save(save_path,save_format="tf")
 hist_df = pd.DataFrame(history.history)
 hist_df.to_csv(f"{save_path}_history.csv")

@@ -1,6 +1,7 @@
 dataset/*
 edf_files/*
 **/__pycache__/**
+**/dest/**
 **/*.png
 **/*.jpg
 **/*.bmp

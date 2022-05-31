@@ -59,5 +59,5 @@ valid_x = norm(valid_x)
 test_x = norm(test_x)
 
 # %% save
-np.savez_compressed(f"{work_path}/tmp/prep.npz",train_x = train_x,train_y = train_y,valid_x=valid_x,valid_y=valid_y,test_x=test_x,test_y=test_y)
+np.savez_compressed(f"{work_path}/dest/prep.npz",train_x = train_x,train_y = train_y,valid_x=valid_x,valid_y=valid_y,test_x=test_x,test_y=test_y)
 # %%
