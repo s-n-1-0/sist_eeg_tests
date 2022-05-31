@@ -12,6 +12,10 @@ import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__),"tests/eeg_dataset_cnn/src"))
 from run_modules import Maxout,EEGDataset,total_acc,binary_acc,recall,precision
+
+EPOCHS = 40
+SIGNAL_SIZE = 4096
+BATCH_SIZE = 32
 # %% データセットの読み込み
 dataset = EEGDataset()
 dataset.read_dataset()
@@ -90,20 +94,18 @@ class STF7(Model):
         x = self.l3(x)
         return x
 # %%
-epochs = 40
-signal_size = 4096
-batch_size = 32
 model = STF7()
-#ers = callbacks.EarlyStopping(monitor='val_loss', patience=30, verbose=1)
+ers = callbacks.EarlyStopping(monitor='val_loss', patience=20, verbose=1)
 opt = optimizers.Adam(learning_rate=0.001)
 model.compile(optimizer=opt,loss='binary_crossentropy',metrics=[total_acc,binary_acc,recall,precision])
-output_shapes=([None,signal_size,32], [None,6])
-tgen = tf.data.Dataset.from_generator(lambda: dataset.make_train_generator(signal_size,batch_size), output_types=(np.float32, np.float32),output_shapes=output_shapes)
-vgen = tf.data.Dataset.from_generator(lambda: dataset.make_valid_generator(signal_size,batch_size), output_types=(np.float32, np.float32),output_shapes=output_shapes)
+output_shapes=([None,SIGNAL_SIZE,32], [None,6])
+tgen = tf.data.Dataset.from_generator(lambda: dataset.make_train_generator(SIGNAL_SIZE,BATCH_SIZE), output_types=(np.float32, np.float32),output_shapes=output_shapes)
+vgen = tf.data.Dataset.from_generator(lambda: dataset.make_valid_generator(SIGNAL_SIZE,BATCH_SIZE), output_types=(np.float32, np.float32),output_shapes=output_shapes)
 history = model.fit(tgen,
-            batch_size=batch_size,
-            epochs=epochs,
+            batch_size=BATCH_SIZE,
+            epochs=EPOCHS,
             validation_data= vgen,
+            callbacks=[ers]
             )
 model.summary()
 
