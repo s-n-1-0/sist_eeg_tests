@@ -4,16 +4,29 @@ import pandas as pd
 import os
 import numpy as np
 import json
+from scipy.signal import lfilter, butter
+IS_FILTER = True
+FN = 4
+LOWCUT = 0.2
+HIGHCUT = 50
 with open("tests/eeg_dataset_cnn/src/settings.json","r") as json_file:
     settings = json.load(json_file)
 train_path = os.path.join(settings["dataset_path"],"train")
 work_path = settings["work_path"]
+fs = settings["fs"]
 # %%
 def read_csv(x_path:str, y_path:str):
+    def make_butter_bandpass():
+        nyq = 0.5 * fs
+        cutoff = [LOWCUT / nyq, HIGHCUT / nyq]
+        b, a = butter(FN, cutoff, btype="bandpass")
+        return b, a
+    b,a = make_butter_bandpass()
     xcsv = pd.read_csv(x_path)
     ycsv = pd.read_csv(y_path)
     x = xcsv.iloc[:,1:].values.astype(np.float32)
     y = ycsv.iloc[:,1:].values.astype(np.float32)
+    x = lfilter(b, a, x, axis=0)
     return x, y
 def read_csv_in_folder(folder_path:str,filename:str):
     data_path = os.path.join(folder_path, filename)

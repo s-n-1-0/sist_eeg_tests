@@ -1,4 +1,5 @@
 {
     "work_path":"tests/eeg_dataset_cnn",
-    "dataset_path":"dataset/grasp-and-lift-eeg-detection"
+    "dataset_path":"dataset/grasp-and-lift-eeg-detection",
+    "fs":500
 }
