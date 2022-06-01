@@ -11,6 +11,8 @@ class EEGDataset():
             self.train_y = prep_dataset["train_y"]
             self.valid_x = prep_dataset["valid_x"]
             self.valid_y = prep_dataset["valid_y"]
+            self.test_x = prep_dataset["test_x"]
+            self.test_y = prep_dataset["test_y"]
     
     def _eeg_random_generater(self,x:np.ndarray,y:np.ndarray,signal_size:int,batch_size:int):
         steps = (x.shape[0] // signal_size) // batch_size
@@ -31,3 +33,5 @@ class EEGDataset():
         return self._eeg_random_generater(self.train_x,self.train_y,signal_size=signal_size,batch_size=batch_size)
     def make_valid_generator(self,signal_size:int,batch_size:int):
         return self._eeg_random_generater(self.valid_x,self.valid_y,signal_size=signal_size,batch_size=batch_size)
+    def make_test_generator(self,signal_size:int,batch_size:int):
+        return self._eeg_random_generater(self.test_x,self.test_y,signal_size,batch_size)
