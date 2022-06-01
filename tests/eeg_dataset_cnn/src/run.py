@@ -5,13 +5,11 @@ import tensorflow as tf
 
 from datetime import datetime
 import pandas as pd
-from keras import Model,callbacks,optimizers,layers,backend as K
-from tensorflow.python.framework import constant_op
-from tensorflow.python.ops import clip_ops,math_ops
+from keras import Model,callbacks,optimizers,layers
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__),"tests/eeg_dataset_cnn/src"))
-from run_modules import Maxout,EEGDataset,total_acc,binary_acc,recall,precision
+from run_modules import Maxout,EEGDataset,total_acc,binary_acc,recall,precision,history_plot
 
 EPOCHS = 100
 SIGNAL_SIZE = 4096
@@ -120,4 +118,6 @@ model.save(save_path,save_format="tf")
 hist_df = pd.DataFrame(history.history)
 hist_df.to_csv(f"{save_path}_history.csv")
 
+# %%
+history_plot(history.history)
 # %%
