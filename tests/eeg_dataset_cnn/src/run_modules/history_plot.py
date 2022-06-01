@@ -22,7 +22,7 @@ def history_plot(input:Union[str,dict]):
 
     plt.plot(epochs, total_acc, linestyle = "solid", label = 'train total-acc')
     plt.plot(epochs, val_total_acc, linestyle = "solid", label= 'valid total-acc')
-    plt.plot(epochs, binary_acc, linestyle = "solid", label= 'valid binary-acc')
+    plt.plot(epochs, binary_acc, linestyle = "solid", label= 'train binary-acc')
     plt.plot(epochs, val_binary_acc, color = "green", linestyle = "solid", label= 'valid binary-acc')
     plt.plot(epochs, loss,linestyle = "solid" ,label = 'train loss')
     plt.plot(epochs, val_loss,linestyle = "solid" , label= 'valid loss')
