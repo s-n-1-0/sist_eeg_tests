@@ -95,7 +95,7 @@
           "top": 0,
           "width": 100,
           "height": 113,
-          "fill": "black",
+          "fill": "#aaaaaa",
           "stroke": null,
           "strokeWidth": 1,
           "strokeDashArray": null,
@@ -119,7 +119,7 @@
           "skewX": 0,
           "skewY": 0,
           "text": "＋",
-          "fontSize": "100",
+          "fontSize": "75",
           "fontWeight": "normal",
           "fontFamily": "sans-serif",
           "fontStyle": "normal",
@@ -212,7 +212,8 @@
         ]
       },
       "sample": {
-        "mode": "sequential"
+        "mode": "draw-replace",
+        "n": "10"
       },
       "files": [],
       "responses": [
@@ -271,6 +272,89 @@
         }
       ],
       "title": "Sequence"
+    },
+    "6": {
+      "id": "6",
+      "type": "lab.canvas.Screen",
+      "content": [
+        {
+          "type": "i-text",
+          "version": "4.3.1",
+          "originX": "center",
+          "originY": "center",
+          "left": 0,
+          "top": 0,
+          "width": 100,
+          "height": 113,
+          "fill": "#aaaaaa",
+          "stroke": null,
+          "strokeWidth": 1,
+          "strokeDashArray": null,
+          "strokeLineCap": "butt",
+          "strokeDashOffset": 0,
+          "strokeLineJoin": "round",
+          "strokeUniform": false,
+          "strokeMiterLimit": 4,
+          "scaleX": 1,
+          "scaleY": 1,
+          "angle": 0,
+          "flipX": false,
+          "flipY": false,
+          "opacity": 1,
+          "shadow": null,
+          "visible": true,
+          "backgroundColor": "",
+          "fillRule": "nonzero",
+          "paintFirst": "fill",
+          "globalCompositeOperation": "source-over",
+          "skewX": 0,
+          "skewY": 0,
+          "text": "＋",
+          "fontSize": "75",
+          "fontWeight": "normal",
+          "fontFamily": "sans-serif",
+          "fontStyle": "normal",
+          "lineHeight": 1.16,
+          "underline": false,
+          "overline": false,
+          "linethrough": false,
+          "textAlign": "center",
+          "textBackgroundColor": "",
+          "charSpacing": 0,
+          "id": "12",
+          "styles": {}
+        }
+      ],
+      "viewport": [
+        800,
+        600
+      ],
+      "files": [],
+      "responses": [
+        {
+          "label": "",
+          "event": "",
+          "target": "",
+          "filter": ""
+        }
+      ],
+      "parameters": [
+        {
+          "name": "",
+          "value": "",
+          "type": "string"
+        }
+      ],
+      "messageHandlers": [
+        {
+          "title": "",
+          "message": "",
+          "code": ""
+        }
+      ],
+      "title": "FirstWait",
+      "_tab": "Behavior",
+      "timeout": "4000"
     },
     "7": {
       "id": "7",
@@ -361,6 +445,7 @@
       "type": "lab.flow.Sequence",
       "children": [
         "1",
+        "6",
         "4"
       ],
       "parameters": [],
