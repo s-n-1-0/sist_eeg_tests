@@ -11,7 +11,7 @@ from run_modules import EEGDataset,Maxout,total_acc,binary_acc,recall,precision
 フィルター適用訓練済みモデルを使用しない場合: model_2022_06_01_00_07
 """
 
-with open("tests/eeg_dataset_cnn/src/settings.json","r") as json_file:
+with open("tests/eeg_dataset_cnn/settings.json","r") as json_file:
     settings = json.load(json_file)
 work_path = settings["work_path"]
 

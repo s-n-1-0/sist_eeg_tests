@@ -2,7 +2,7 @@ import json
 import numpy as np
 class EEGDataset():
     def read_dataset(self,filename="prep.npz"):
-        with open("tests/eeg_dataset_cnn/src/settings.json","r") as json_file:
+        with open("tests/eeg_dataset_cnn/settings.json","r") as json_file:
             settings = json.load(json_file)
             work_path =  settings["work_path"]
             npz_path = f"{work_path}/dest/{filename}"

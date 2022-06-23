@@ -9,7 +9,7 @@ IS_FILTER = True
 FN = 4
 LOWCUT = 0.2
 HIGHCUT = 50
-with open("tests/eeg_dataset_cnn/src/settings.json","r") as json_file:
+with open("tests/eeg_dataset_cnn/settings.json","r") as json_file:
     settings = json.load(json_file)
 train_path = os.path.join(settings["dataset_path"],"train")
 work_path = settings["work_path"]

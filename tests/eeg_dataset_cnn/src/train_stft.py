@@ -8,7 +8,7 @@ import pandas as pd
 import json
 import numpy as np
 import matplotlib.pyplot as plt
-with open("tests/eeg_dataset_cnn/src/settings.json","r") as json_file:
+with open("tests/eeg_dataset_cnn/settings.json","r") as json_file:
     settings = json.load(json_file)
 dataset_path = settings["dataset_path"]
 csv = pd.read_csv(f"{dataset_path}/train/subj1_series2_data.csv")

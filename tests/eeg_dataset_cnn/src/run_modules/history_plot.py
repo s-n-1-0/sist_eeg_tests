@@ -34,7 +34,7 @@ def history_plot(input:Union[str,dict]):
     plt.close()
 # %%
 if __name__ == '__main__':
-    with open("tests/eeg_dataset_cnn/src/settings.json","r") as json_file:
+    with open("tests/eeg_dataset_cnn/settings.json","r") as json_file:
         settings = json.load(json_file)
         work_path =  settings["work_path"]
 

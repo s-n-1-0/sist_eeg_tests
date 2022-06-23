@@ -108,7 +108,7 @@ history = model.fit(tgen,
 model.summary()
 
 # %% モデルと履歴の保存
-with open("tests/eeg_dataset_cnn/src/settings.json","r") as json_file:
+with open("tests/eeg_dataset_cnn/settings.json","r") as json_file:
     settings = json.load(json_file)
     work_path =  settings["work_path"]
 dtnow = datetime.now()
