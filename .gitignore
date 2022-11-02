@@ -1,5 +1,4 @@
 dataset/*
-edf_files/*
 **/__pycache__/**
 **/dest/**
 **/*.png
@@ -9,3 +8,5 @@ edf_files/*
 **/*.npy
 **/*.npz
 **/*.edf
+**/*.hdf
+**/*.h5
