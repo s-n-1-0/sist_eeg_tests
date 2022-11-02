@@ -4,7 +4,7 @@ import pyedflib
 import edf_viewer as myedf
 import pandas as pd
 import numpy as np
-EDF_PATH = "edf_files/test4/kurihara_0510_try2.edf"
+EDF_PATH = "edf_files/test4/test4_0510_try2.edf"
 CSV_PATH = "tests/test4/test4_try2--2022-05-10--17_04_54.csv"
 #----------
 edf_dir_path = os.path.dirname(EDF_PATH)
