@@ -2,6 +2,7 @@
 import pyedflib
 from scipy import signal
 import edf_viewer as myedf
+from labedf import csv2,edf2
 EDF_PATH = "edf_files/test4/test4_3_0930.edf"
 
 # %% lowpass
@@ -33,4 +34,8 @@ with pyedflib.EdfReader(EDF_PATH) as redf:
         for i,_ in enumerate(annos[0]):
             wedf.writeAnnotation(annos[0][i],annos[1][i],annos[2][i])
         wedf.close()
+# %% merge
+merged_edf_path = "./copy2.edf"
+csv2.merge_csv2edf("./copy.edf","./tests/test4/test4--2022-09-30--16_41_53.csv",merged_edf_path)
+edf2.split_annotations_edf2hdf(merged_edf_path,"ex.h5",is_groupby=True)
 # %%
