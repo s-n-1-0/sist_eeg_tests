@@ -8,3 +8,4 @@ edf_files/*
 **/*.csv
 **/*.npy
 **/*.npz
+**/*.edf
