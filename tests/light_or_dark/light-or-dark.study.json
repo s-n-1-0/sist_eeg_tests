@@ -578,8 +578,8 @@
         }
       ],
       "title": "Marker",
-      "_tab": "Content",
-      "timeout": "1000"
+      "_tab": "Behavior",
+      "timeout": "2000"
     },
     "8": {
       "id": "8",
@@ -832,8 +832,8 @@
         }
       ],
       "title": "Wait",
-      "_tab": "Content",
-      "timeout": "2000"
+      "_tab": "Behavior",
+      "timeout": "1000"
     },
     "root": {
       "id": "root",
