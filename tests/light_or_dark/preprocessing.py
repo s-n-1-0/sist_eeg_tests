@@ -13,7 +13,7 @@ file_names = [fp.split(".")[0] for fp in os.listdir(f"{PROJECT_DATA_DIR_PATH}/ed
 for file_name in file_names:
     edf_path = f"{PROJECT_DATA_DIR_PATH}/edf/{file_name}.edf"
     csv_path = f"{PROJECT_DATA_DIR_PATH}/csv/{file_name}.csv"
-    csv2.merge_csv2edf(edf_path,csv_path,f"{build_dir_path}/{file_name}.edf")
+    csv2.merge_csv2edf(edf_path,csv_path,f"{build_dir_path}/{file_name}.edf",label_header_name="LorD")
 # %% to hdf
 export_path = f"{PROJECT_DATA_DIR_PATH}/ex.h5"
 def preprocessing(signals:list[np.ndarray]):
