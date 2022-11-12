@@ -2,10 +2,14 @@
 from typing import Any, Callable
 import h5py
 import numpy as np
-def generator(path:str,signal_size:int,batch_size:int,label_func:Callable[[str],Any]):
+def generator(mode:bool,path:str,signal_size:int,batch_size:int,border:int,label_func:Callable[[str],Any]):
     with h5py.File(path, 'r') as hf:
         group = hf["annotations/Marker"]
         keys = list(group.keys())
+        if mode:
+            keys  = keys[:border]
+        else:
+            keys = keys[border:]
         steps = len(keys) // batch_size
         count = 0
         while count < steps:
