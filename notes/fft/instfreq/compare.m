@@ -21,12 +21,19 @@ iamp = sqrt(re.^2 + im.^2);
 phase = atan2(im,re);
 phase = unwrap(phase);
 ifreq = (fs/(2*pi))*gradient(phase);
+% ---- 手動で瞬時周波数取得(STFT経由)
+[psPower,psFreq,psTime] = pspectrum(y,fs,'spectrogram');
+tfd = psPower;
+tfd = tfd/sum(tfd(:));
+tfdSum = sum(tfd);
+tmp = sum(psFreq.*tfd,1);
+psMoment = tmp./tfdSum;
 
 % ---- MALTABの場合
 [z,tz] = instfreq(y,fs);
 [a,ta] = tfsmoment(y,fs,1,Centralize=false);
 
 %% ---- 以下比較
-plot(tz,z,ta,a,'.',t,ifreq,'r')
-legend("MATLAB-instfreq","MATLAB-tfsmoment","MY-instfreq")
+plot(tz,z,ta,a,'.',t,ifreq,'g',psTime,psMoment,'o');
+legend("MATLAB-instfreq","MATLAB-tfsmoment","MY-hilbert","MY-stft");
 % 一致していることがわかる
