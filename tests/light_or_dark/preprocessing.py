@@ -3,13 +3,14 @@ import os
 from labedf import csv2,edf2
 import numpy as np
 from scipy import signal
+from utils.spec import instfreq
 PROJECT_DATA_DIR_PATH = "./edf_files/lord"
 fs = 500  # note: できればファイルから取得するべき
-# %% merge csv,edf
 build_dir_path = f"{PROJECT_DATA_DIR_PATH}/build"
 if not os.path.exists(build_dir_path):
     os.makedirs(build_dir_path)
 file_names = [fp.split(".")[0] for fp in os.listdir(f"{PROJECT_DATA_DIR_PATH}/edf")]
+# %% merge csv,edf
 for file_name in file_names:
     edf_path = f"{PROJECT_DATA_DIR_PATH}/edf/{file_name}.edf"
     csv_path = f"{PROJECT_DATA_DIR_PATH}/csv/{file_name}.csv"
@@ -47,5 +48,12 @@ for i ,file_name in enumerate(file_names):
     is_groupby=True,
     is_overwrite= i != 0,
     preprocessing_func=take2_preprocessing)
+
+# %% note
+from pyedflib import EdfReader
+from utils import edf
+with EdfReader(build_dir_path + "/lord_0001.edf") as er:
+    s = edf.get_all_signals(er)[0]
+    z = instfreq(x=norm(butter_lowpass_filter(s,40)),fs=fs,window="hann",nperseg=512)[0]
 
 # %%
