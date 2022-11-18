@@ -32,3 +32,7 @@ plt.pcolormesh(times, freq, power)
 plt.show()
 plt.plot(times,moment)
 # %%
+from utils.spec import instfreq
+moment,times = instfreq(x=y,fs=fs,window="hann",nperseg=1024*2,noverlap=2017)
+plt.plot(times,moment)
+# %%
