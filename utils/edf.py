@@ -1,4 +1,5 @@
 from pyclbr import Function
+from typing import Any
 import pyedflib
 import math
 import utils
