@@ -1,7 +1,7 @@
 #%%
-import edf_viewer
-import lib.spec as spec
-import lib.edf as myedf
+import utils
+import utils.spec as spec
+import utils.edf as myedf
 import math
 import pyedflib
 from scipy import signal
@@ -21,7 +21,7 @@ fs = myedf.get_fs(edf)
 # %%
 signal_header = edf.getSignalHeader(0)
 ewav_time = edf.getFileDuration()
-annotations = edf_viewer.get_annotations(edf)
+annotations = utils.get_annotations(edf)
 view_annotations = [(name,time,index) for name,time,_,index in annotations]
 print(tabulate(view_annotations,["Name","Time(s)","Index"],tablefmt="grid",colalign=('center','center')))
 # %% 【前のセル実行必須】平均波形にアノテーションを表示します。

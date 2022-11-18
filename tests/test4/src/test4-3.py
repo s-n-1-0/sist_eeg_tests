@@ -1,7 +1,7 @@
 # %%
 import pyedflib
 from scipy import signal
-import edf_viewer as myedf
+import utils as myedf
 from labedf import csv2,edf2
 EDF_PATH = "edf_files/test4/test4_3_0930.edf"
 

@@ -1,7 +1,7 @@
 # %%
 import os
 import pyedflib
-import edf_viewer as myedf
+import utils as myedf
 import pandas as pd
 import numpy as np
 EDF_PATH = "edf_files/test4/test4_0510_try2.edf"

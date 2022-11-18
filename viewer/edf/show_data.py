@@ -1,13 +1,13 @@
 #%%
-import lib.spec as spec
-import lib.edf as myedf
+import utils.spec as spec
+import utils.edf as myedf
 import pyedflib
 import matplotlib.pyplot as plt
 import matplotlib.mlab as mlab
 import numpy as np
 from scipy import signal
 from tabulate import tabulate
-from edf_viewer import pass_range
+from utils import pass_range
 EDF_PATH = "edf_files/test2_0412_2.edf"
 CH_IDX = 0
 timeRange = [0,60]#秒

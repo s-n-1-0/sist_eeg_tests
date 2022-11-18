@@ -1,7 +1,7 @@
 from pyclbr import Function
 import pyedflib
 import math
-import edf_viewer
+import utils
 def get_all_signals(edf:pyedflib.EdfReader):
     """
     edfファイルから全チャンネルの波形を取得して返します。
@@ -29,7 +29,7 @@ def get_annotations(edf:pyedflib.EdfReader):
        タプル(名前,経過秒,間隔,インデックス)を配列で返します。
     """
     annotations = edf.readAnnotations()
-    fs = edf_viewer.get_fs(edf)
+    fs = utils.get_fs(edf)
     rows:list[tuple[str,float,Any,int]] = [(name,time,duration,math.floor(time * fs))for time,duration,name in zip(annotations[0],annotations[1],annotations[2])]
     return rows
 

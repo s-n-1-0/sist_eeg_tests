@@ -3,7 +3,7 @@ trainデータの特定チャネルをスペクトログラムでプロットす
 (確認用)
 """
 # %%
-from  edf_viewer import spec
+from  utils import spec
 import pandas as pd
 import json
 import numpy as np

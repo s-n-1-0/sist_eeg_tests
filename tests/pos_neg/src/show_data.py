@@ -6,7 +6,7 @@ from PIL import Image
 from matplotlib import pyplot as plt
 from itertools import groupby
 import pyedflib
-import edf_viewer
+import utils
 import pandas as pd
 from datetime import datetime
 import math
@@ -22,8 +22,8 @@ NEG_GROUP_NAMES = ["A","H","Z"]
 NEU_GROUP_NAMES = ["N"]
 # %% 【必須2】edfファイルの取得
 edf = pyedflib.EdfReader(EDF_PATH)
-fs = edf_viewer.get_fs(edf)#サンプリングレート
-annos = edf_viewer.get_annotations(edf)
+fs = utils.get_fs(edf)#サンプリングレート
+annos = utils.get_annotations(edf)
 # %% 画像データの表示
 files = glob.glob(f"{IMG_DIR_PATH}/*.bmp")
 def get_file_data(f:str):
@@ -56,7 +56,7 @@ plot_groups("Positive Images",exs_groups,POS_GROUP_NAMES)
 plot_groups("Negative Images",exs_groups,NEG_GROUP_NAMES)
 plot_groups("Neutral Images",exs_groups,NEU_GROUP_NAMES)
 # %% edfからeegを取得し実験部分以外を切り捨て
-all_signals = edf_viewer.get_all_signals(edf)
+all_signals = utils.get_all_signals(edf)
 #use_colsによって実験開始までの行データをスキップ
 """
 0:title -> 0
@@ -97,7 +97,7 @@ fixed_offset_end_times = np.asarray(offset_end_times) + start_anno[1]
 fixed_offset_end_time_indexes = np.asarray(offset_end_time_indexes) + start_anno[3]
 
 #各回答ごとにeegをスプリット
-freqs,t,all_specs = edf_viewer.spec.get_spectrograms(all_signals,fs)
+freqs,t,all_specs = utils.spec.get_spectrograms(all_signals,fs)
 ans_trange_indexes = [np.where((t>=rt) & (t<=et))[0] for rt,et in zip(fixed_offset_run_times,fixed_offset_end_times)]
 ans_not_trange_indexes = [np.where((t<rt) | (t>et))[0] for rt,et in zip(fixed_offset_run_times,fixed_offset_end_times)]
 def zero_padding_spec(sp:np.ndarray,zero_range:np.ndarray):
@@ -131,8 +131,8 @@ plt.show()
 plt.show()
 
 # %% 各回答ごとに波形情報抽出
-alpha_freq_indexes,alpha_freqs = edf_viewer.pass_range.pass_range(freqs,8,13)
-beta_freq_indexes,beta_freqs = edf_viewer.pass_range.pass_range(freqs,13,24)
+alpha_freq_indexes,alpha_freqs = utils.pass_range.pass_range(freqs,8,13)
+beta_freq_indexes,beta_freqs = utils.pass_range.pass_range(freqs,13,24)
 ans_alpha_specs = []
 ans_beta_specs = []
 # a,b,a/bのタプル
