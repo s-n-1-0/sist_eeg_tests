@@ -3,10 +3,13 @@ import os
 from labedf import csv2,edf2
 import numpy as np
 from scipy import signal
+from pyedflib import EdfReader
 from utils.spec import instfreq as _instfreq
+from utils import edf as myedf
 PROJECT_DATA_DIR_PATH = "./edf_files/lord"
-fs = 500  # note: できればファイルから取得するべき
 build_dir_path = f"{PROJECT_DATA_DIR_PATH}/build"
+with EdfReader(build_dir_path + "/lord_0001.edf") as er:
+    fs = int(myedf.get_fs(er))
 if not os.path.exists(build_dir_path):
     os.makedirs(build_dir_path)
 file_names = [fp.split(".")[0] for fp in os.listdir(f"{PROJECT_DATA_DIR_PATH}/edf")]
@@ -67,10 +70,9 @@ for i ,file_name in enumerate(file_names):
     )
 
 # %% note
-from pyedflib import EdfReader
-from utils import edf
+
 with EdfReader(build_dir_path + "/lord_0001.edf") as er:
-    s = edf.get_all_signals(er)[0]
+    s = myedf.get_all_signals(er)[0]
     z = _instfreq(x=norm(butter_lowpass_filter(s,40)),fs=fs,window="hann",nperseg=512)[0]
 
 # %%
