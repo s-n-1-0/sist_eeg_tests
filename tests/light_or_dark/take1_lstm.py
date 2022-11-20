@@ -38,29 +38,9 @@ history = model.fit(tgen,
 #predict = model.predict(test, verbose=1)
 # %%
 plot_history(history.history,metrics=["binary_accuracy"])
+plot_history(history.history,metrics=[])
 save_history(".",history.history)
+
 # %%
-import matplotlib.pyplot as plt
-h = history.history
-loss = h['loss']
-val_loss = h['val_loss']
-epochs = range(len(loss))
-#epochs = epochs[200:]
-
-plt.figure(figsize=(12, 10))
-plt.rcParams['font.size'] = 25
-plt.plot(epochs, loss,linestyle = "solid" ,label = 'loss')
-plt.plot(epochs, val_loss,linestyle = "solid" , label= 'valid loss')
-metrics = []#["binary_accuracy"]
-for mn in metrics:
-    acc = h[mn]
-    val_acc = h['val_'+mn]
-    plt.plot(epochs, acc, linestyle = "solid", label = mn)
-    plt.plot(epochs, val_acc, linestyle = "solid", label= 'valid '+mn)
-
-plt.legend(bbox_to_anchor=(1, 1), loc='upper right', borderaxespad=1)
-plt.grid()
-plt.show()
-plt.close()
-
+model.save(".\model_e500.h5",save_format="h5")
 # %%
