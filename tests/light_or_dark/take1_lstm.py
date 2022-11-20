@@ -4,7 +4,7 @@ import tensorflow as tf
 from keras.models import Sequential
 from keras.layers import Dense,  LSTM,Activation
 import numpy as np
-from generator import generator
+from generator import make_generators
 from utils.history import save_history,plot_history
 # %% 
 # take1 Wall time: 20min 3s
@@ -22,15 +22,18 @@ model.compile(loss='binary_crossentropy',
             optimizer='adam', 
             metrics=["binary_accuracy"])
 output_shapes=([None,back,ch], [None])
-def make_generator(is_train:bool):
-    def take1_pick(signal:np.ndarray):
-        r = random.randint(0,25) # ランダム要素
-        return signal[:,r: r + back]
-    def take2_pick(signal:np.ndarray):
-        return signal[[0,5],:back]
-    return tf.data.Dataset.from_generator(lambda: generator(is_train,"./edf_files/lord/ex.h5",4,-20,label_func=lambda label: int(label == "dark"),pick_func=take2_pick),output_types=(np.float32,np.float32), output_shapes=output_shapes)
-tgen = make_generator(True)
-vgen = make_generator(False)
+
+def take1_pick(signal:np.ndarray):
+    r = random.randint(0,25) # ランダム要素
+    return signal[:,r: r + back]
+def take2_pick(signal:np.ndarray):
+    return signal[[0,5],:back]
+
+tgen,vgen = make_generators("./edf_files/lord/ex.h5",4,-20,label_func=lambda label: int(label == "dark"),pick_func=take2_pick)
+def from_generator(gen):
+    return tf.data.Dataset.from_generator(gen,output_types=(np.float32,np.float32), output_shapes=output_shapes)
+tgen = from_generator(tgen)
+vgen = from_generator(vgen)
 history = model.fit(tgen,
         epochs=500, 
         batch_size=4,
@@ -38,7 +41,7 @@ history = model.fit(tgen,
 #predict = model.predict(test, verbose=1)
 # %%
 plot_history(history.history,metrics=["binary_accuracy"])
-plot_history(history.history,metrics=[])
+plot_history(history.history,metrics=["binary_accuracy"],is_loss=False)
 save_history(".",history.history)
 
 # %%
