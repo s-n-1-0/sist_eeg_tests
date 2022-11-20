@@ -1,20 +1,19 @@
 from typing import Any
 import pandas as pd
 import matplotlib.pyplot as plt
-def plot_history(h:Any,metrics:list[str]):
+def plot_history(h:Any,metrics:list[str],is_loss:bool = True):
     """
     h = history.history
     """
     loss = h['loss']
     val_loss = h['val_loss']
-    #train_acc = h['binary_accuracy']
-    #val_total_acc = h['val_binary_accuracy']
     epochs = range(len(loss))
 
     plt.figure(figsize=(12, 10))
     plt.rcParams['font.size'] = 25
-    plt.plot(epochs, loss,linestyle = "solid" ,label = 'loss')
-    plt.plot(epochs, val_loss,linestyle = "solid" , label= 'valid loss')
+    if is_loss:
+        plt.plot(epochs, loss,linestyle = "solid" ,label = 'loss')
+        plt.plot(epochs, val_loss,linestyle = "solid" , label= 'valid loss')
     for mn in metrics:
         acc = h[mn]
         val_acc = h['val_'+mn]
