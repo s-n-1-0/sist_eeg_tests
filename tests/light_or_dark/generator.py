@@ -9,6 +9,7 @@ def generator(mode:bool,path:str,batch_size:int,border:int,label_func:Callable[[
         keys = list(group.keys())
         if mode:
             keys  = keys[:border]
+            random.shuffle(keys)
         else:
             keys = keys[border:]
         steps = len(keys) // batch_size
