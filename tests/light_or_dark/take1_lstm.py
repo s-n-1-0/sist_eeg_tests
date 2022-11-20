@@ -15,7 +15,7 @@ ch = 2
 model = Sequential()
 model.add(LSTM(100, 
             activation='tanh', 
-            recurrent_activation='hard_sigmoid'))
+            recurrent_activation='sigmoid'))
 model.add(Dense(1))
 model.add(Activation("sigmoid"))
 model.compile(loss='binary_crossentropy', 
