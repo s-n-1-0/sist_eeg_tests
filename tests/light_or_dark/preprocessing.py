@@ -38,7 +38,7 @@ def norm(s:np.ndarray)->np.ndarray:
     std = np.std(s,axis=0)
     return (s - m ) /std
 def before_preprocessing(signals:list[np.ndarray]):
-    signals = [norm(butter_lowpass_filter(signal,200)) for signal in signals] #note 200
+    signals = [norm(butter_lowpass_filter(signal,200)) for signal in signals] #note take1,2 40 hz -> 3... 200
     return signals
 # take1_after_preprocessing = None
 def take2_after_preprocessing(signal:np.ndarray):
@@ -63,7 +63,7 @@ for i ,file_name in enumerate(file_names):
     is_groupby=True,
     is_overwrite= i != 0,
     before_preprocessing_func= before_preprocessing,
-    after_preprocessing_func=take2_after_preprocessing
+    after_preprocessing_func=None
     )
 
 # %% note

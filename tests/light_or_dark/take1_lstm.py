@@ -8,8 +8,8 @@ from generator import generator
 from utils.history import save_history,plot_history
 # %% 
 # take1 Wall time: 20min 3s
-# take2 Wall time: 7min 14s
-back = 160 # take1 = 500
+# take2,3 Wall time: 7min 14s
+back = 500 #take 2,3 = 160 # take1,4 = 500
 ch = 2
 # %%
 model = Sequential()
