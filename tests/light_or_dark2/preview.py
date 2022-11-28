@@ -1,8 +1,8 @@
 # %%
+import random
 import h5py
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy import signal
 from utils import norm
 path = "./dataset/lord2/ex.h5"
 group_path = "annotations/Marker"
@@ -30,7 +30,23 @@ with h5py.File(path) as f:
         plt.legend()
         plt.show()
 
-
+# %% ERP diff
+r = 500 #信号範囲
+erpr = 150 # erp範囲
+l = 3
+ch = 0 # ch
+with h5py.File(path) as f:
+    c = int(f[group_path].attrs["count"])
+    darks = np.array([f[f"{group_path}/{i}"][:,:r] for i in range(c) if f[f"{group_path}/{i}"].attrs["label"] == "dark"])
+    lights = np.array([f[f"{group_path}/{i}"][:,:r] for i in range(c) if f[f"{group_path}/{i}"].attrs["label"] == "light" ])
+    lst = list(range(darks.shape[0]))
+    for i in range(l):
+        random.shuffle(lst)
+        erp_dark = norm(darks[lst[:erpr],:,:].sum(axis=0) / c)
+        plt.plot(range(r),erp_dark[ch,:],label=f"dark {i}")
+    plt.title(f"{ch}ch dark")
+    plt.legend()
+    plt.show()
 # %% data[1] + erp
 idx = 55
 r = 500
