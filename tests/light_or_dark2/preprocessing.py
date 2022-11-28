@@ -39,15 +39,19 @@ def butter_lowpass_filter(x, lowcut,order=4):
     y = signal.filtfilt(b, a, x)
     return y
 def before_preprocessing(signals:list[np.ndarray]):
-    signals = [norm(butter_lowpass_filter(signal,30)) for signal in signals]
+    signals = [butter_lowpass_filter(signal,30) for signal in signals]
     return signals
+def after_preprocessing(signals:np.ndarray,label:str):
+    if label != "dark" and label != "light":
+        return signals
+    return norm(signals)
 for i ,filename in enumerate(filenames):
     edf2.split_annotations_edf2hdf(f"{build_dir_path}/{filename}.edf",
     export_path,
     is_groupby=True,
     is_overwrite= i != 0,
     before_preprocessing_func= before_preprocessing,
-    after_preprocessing_func=None
+    after_preprocessing_func=after_preprocessing
     )
 
 # %%

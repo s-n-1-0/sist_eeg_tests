@@ -19,8 +19,8 @@ with h5py.File(path) as f:
 r = 500
 with h5py.File(path) as f:
     c = int(f[group_path].attrs["count"])
-    darks = np.array([norm(f[f"{group_path}/{i}"][:,:r]) for i in range(c) if f[f"{group_path}/{i}"].attrs["label"] == "dark"])
-    lights = np.array([norm(f[f"{group_path}/{i}"][:,:r]) for i in range(c) if f[f"{group_path}/{i}"].attrs["label"] == "light" ])
+    darks = np.array([f[f"{group_path}/{i}"][:,:r] for i in range(c) if f[f"{group_path}/{i}"].attrs["label"] == "dark"])
+    lights = np.array([f[f"{group_path}/{i}"][:,:r] for i in range(c) if f[f"{group_path}/{i}"].attrs["label"] == "light" ])
     erp_dark = (darks.sum(axis=0) / c)
     erp_light = (lights.sum(axis=0) / c)
     for i in range(10):
@@ -36,8 +36,8 @@ idx = 55
 r = 500
 with h5py.File(path) as f:
     c = int(f[group_path].attrs["count"])
-    darks = np.array([norm(f[f"{group_path}/{i}"][:,:r]) for i in range(c) if f[f"{group_path}/{i}"].attrs["label"] == "dark"])
-    lights = np.array([norm(f[f"{group_path}/{i}"][:,:r]) for i in range(c) if f[f"{group_path}/{i}"].attrs["label"] == "light" ])
+    darks = np.array([f[f"{group_path}/{i}"][:,:r] for i in range(c) if f[f"{group_path}/{i}"].attrs["label"] == "dark"])
+    lights = np.array([f[f"{group_path}/{i}"][:,:r] for i in range(c) if f[f"{group_path}/{i}"].attrs["label"] == "light" ])
     erp_dark = norm((darks[:,:,:].sum(axis=0) / c))
     erp_light = norm((lights[:,:,:].sum(axis=0) / c))
     merged_dark = norm((erp_dark + darks[idx,:,:]) / 2.0)
