@@ -3,14 +3,9 @@ import h5py
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import signal
-path = "./edf_files/lord/ex.h5"
+from utils import norm
+path = "./dataset/lord2/ex.h5"
 group_path = "annotations/Marker"
-def norm(s:np.ndarray)->np.ndarray:
-    m = np.mean(s,axis=1)
-    std = np.std(s,axis=1)
-    for i in range(m.shape[0]):
-        s[i,:] = (s[i,:] - m[i]) / std[i]        
-    return s
 # %% データセット数
 
 with h5py.File(path) as f:
