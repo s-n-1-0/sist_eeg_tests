@@ -5,7 +5,7 @@ import numpy as np
 from scipy import signal
 from pyedflib import EdfReader
 from utils.spec import instfreq as _instfreq
-from utils import edf as myedf,edflab as myedflab
+from utils import edf as myedf,edflab as myedflab,norm
 PROJECT_DATA_DIR_PATH = "./dataset/lord2"
 build_dir_path = f"{PROJECT_DATA_DIR_PATH}/build"
 edfcsv_filenames = myedflab.get_edfcsv_filenames(f"{PROJECT_DATA_DIR_PATH}/ペア.csv")
@@ -38,11 +38,6 @@ def butter_lowpass_filter(x, lowcut,order=4):
     b, a = butter_lowpass(lowcut,order=order)
     y = signal.filtfilt(b, a, x)
     return y
-# ---
-def norm(s:np.ndarray)->np.ndarray:
-    m = np.mean(s,axis=0)
-    std = np.std(s,axis=0)
-    return (s - m ) /std
 def before_preprocessing(signals:list[np.ndarray]):
     signals = [norm(butter_lowpass_filter(signal,30)) for signal in signals]
     return signals
