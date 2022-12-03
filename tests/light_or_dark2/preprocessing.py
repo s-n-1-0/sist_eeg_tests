@@ -5,7 +5,7 @@ import numpy as np
 from scipy import signal
 from pyedflib import EdfReader
 from utils.spec import instfreq as _instfreq
-from utils import edf as myedf,edflab as myedflab,norm
+from utils import edf as myedf,edflab as myedflab,signals_standardization
 PROJECT_DATA_DIR_PATH = "./dataset/lord2"
 build_dir_path = f"{PROJECT_DATA_DIR_PATH}/build"
 edfcsv_filenames = myedflab.get_edfcsv_filenames(f"{PROJECT_DATA_DIR_PATH}/ペア.csv")
@@ -44,7 +44,7 @@ def before_preprocessing(signals:list[np.ndarray]):
 def after_preprocessing(signals:np.ndarray,label:str):
     if label != "dark" and label != "light":
         return signals
-    return norm(signals)
+    return signals_standardization(signals)
 for i ,filename in enumerate(filenames):
     edf2.split_annotations_edf2hdf(f"{build_dir_path}/{filename}.edf",
     export_path,

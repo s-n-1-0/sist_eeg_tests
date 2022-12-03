@@ -52,7 +52,7 @@ def concatenate(lst:list,interpolate:bool):
             p += len(s)
             destructive_interpolate(result, p)
     return result
-def norm(data:np.ndarray)->np.ndarray:
+def std(data:np.ndarray)->np.ndarray:
     m = np.mean(data,axis=0)
     std = np.std(data,axis=0)
     return (data - m ) /std
@@ -67,9 +67,9 @@ test_y = concatenate(train_y[:2],interpolate=False)
 train_x = concatenate(train_x[2:-3],interpolate=True)
 train_y  = concatenate(train_y[2:-3],interpolate=False)
 
-train_x = norm(train_x)
-valid_x = norm(valid_x)
-test_x = norm(test_x)
+train_x = std(train_x)
+valid_x = std(valid_x)
+test_x = std(test_x)
 
 # %% save
 np.savez_compressed(f"{work_path}/dest/prep.npz",train_x = train_x,train_y = train_y,valid_x=valid_x,valid_y=valid_y,test_x=test_x,test_y=test_y)

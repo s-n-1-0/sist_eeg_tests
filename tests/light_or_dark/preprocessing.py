@@ -36,12 +36,12 @@ def butter_lowpass_filter(x, lowcut,order=4):
     y = signal.filtfilt(b, a, x)
     return y
 # ---
-def norm(s:np.ndarray)->np.ndarray:
+def std(s:np.ndarray)->np.ndarray:
     m = np.mean(s,axis=0)
     std = np.std(s,axis=0)
     return (s - m ) /std
 def before_preprocessing(signals:list[np.ndarray]):
-    signals = [norm(butter_lowpass_filter(signal,200)) for signal in signals] #note take1,2 40 hz -> 3... 200
+    signals = [std(butter_lowpass_filter(signal,200)) for signal in signals] #note take1,2 40 hz -> 3... 200
     return signals
 # take1_after_preprocessing = None
 def take2_after_preprocessing(signal:np.ndarray):
@@ -73,6 +73,6 @@ for i ,file_name in enumerate(file_names):
 
 with EdfReader(build_dir_path + "/lord_0001.edf") as er:
     s = myedf.get_all_signals(er)[0]
-    z = _instfreq(x=norm(butter_lowpass_filter(s,40)),fs=fs,window="hann",nperseg=512)[0]
+    z = _instfreq(x=std(butter_lowpass_filter(s,40)),fs=fs,window="hann",nperseg=512)[0]
 
 # %%

@@ -3,7 +3,7 @@ import random
 import h5py
 import numpy as np
 import matplotlib.pyplot as plt
-from utils import norm
+from utils import signals_standardization
 path = "./dataset/lord2/ex.h5"
 group_path = "annotations/Marker"
 # %% データセット数
@@ -42,7 +42,7 @@ with h5py.File(path) as f:
     lst = list(range(darks.shape[0]))
     for i in range(l):
         random.shuffle(lst)
-        erp_dark = norm(darks[lst[:erpr],:,:].sum(axis=0) / c)
+        erp_dark = signals_standardization(darks[lst[:erpr],:,:].sum(axis=0) / c)
         plt.plot(range(r),erp_dark[ch,:],label=f"dark {i}")
     plt.title(f"{ch}ch dark")
     plt.legend()
@@ -54,10 +54,10 @@ with h5py.File(path) as f:
     c = int(f[group_path].attrs["count"])
     darks = np.array([f[f"{group_path}/{i}"][:,:r] for i in range(c) if f[f"{group_path}/{i}"].attrs["label"] == "dark"])
     lights = np.array([f[f"{group_path}/{i}"][:,:r] for i in range(c) if f[f"{group_path}/{i}"].attrs["label"] == "light" ])
-    erp_dark = norm((darks[:,:,:].sum(axis=0) / c))
-    erp_light = norm((lights[:,:,:].sum(axis=0) / c))
-    merged_dark = norm((erp_dark + darks[idx,:,:]) / 2.0)
-    merged_light = norm((erp_light + lights[idx,:,:]) / 2.0)
+    erp_dark = signals_standardization((darks[:,:,:].sum(axis=0) / c))
+    erp_light = signals_standardization((lights[:,:,:].sum(axis=0) / c))
+    merged_dark = signals_standardization((erp_dark + darks[idx,:,:]) / 2.0)
+    merged_light = signals_standardization((erp_light + lights[idx,:,:]) / 2.0)
     for i in range(10):
         plt.plot(range(r),darks[idx,i,:],label="dark")
         plt.plot(range(r),erp_dark[i,:],label="erp_dark")

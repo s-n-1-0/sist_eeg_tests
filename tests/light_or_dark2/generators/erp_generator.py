@@ -4,7 +4,7 @@ from typing import Any, Callable
 import h5py
 import numpy as np
 rate = 0.6
-from utils.signal import norm
+from utils import signals_standardization
 def make_generators(path:str,erp_size:int,batch_size:int,border:int,label_func:Callable[[str],Any],pick_func:Callable[[h5py.Dataset,bool],np.ndarray]):
     with h5py.File(path, 'r') as hf:
         group = hf["annotations/Marker"]
@@ -29,7 +29,7 @@ def make_generators(path:str,erp_size:int,batch_size:int,border:int,label_func:C
                     for i in range(erp_size):
                         dataset = group[keys[i]]
                         erp.append(pick_func(dataset,False))
-                    return norm(np.array(erp).sum(axis=0) / erp_size)#norm(norm(np.array(erp).sum(axis=0) / erp_size) * 0.2 + pick_func(group[keys[erp_size + 1]],False)* 0.8)
+                    return signals_standardization(np.array(erp).sum(axis=0) / erp_size)#std(std(np.array(erp).sum(axis=0) / erp_size) * 0.2 + pick_func(group[keys[erp_size + 1]],False)* 0.8)
                 else:
                     return pick_func(group[keys[0]],False)
             itr_count = 0
