@@ -47,7 +47,7 @@ output_shapes=([None,back,ch], [None])
 def take6_pick(signal:np.ndarray,mode:bool):
     return signal[:,:back]
 
-tgen,vgen = make_generators("./dataset/lord2/ex.h5",160,batch_size,-162,label_func=lambda label: int(label == "dark"),pick_func=take6_pick)
+tgen,vgen = make_generators("./dataset/lord2/ex.h5",216,batch_size,-216,label_func=lambda label: int(label == "dark"),pick_func=take6_pick)
 def from_generator(gen):
     return tf.data.Dataset.from_generator(gen,output_types=(np.float32,np.float32), output_shapes=output_shapes)
 tgen = from_generator(tgen)
