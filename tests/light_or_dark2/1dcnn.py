@@ -1,6 +1,7 @@
 # %%
 import tensorflow as tf
 from keras.models import Sequential
+from keras.callbacks import ReduceLROnPlateau
 from keras.layers import Dense,Activation,Dropout,Conv1D,MaxPooling1D,Flatten
 import numpy as np
 from generators.erp_generator import make_generators
@@ -8,16 +9,16 @@ from utils.history import save_history,plot_history
 # %% 
 back = 500
 ch = 10
-batch_size = 4
+batch_size = 32
 # %%
 model = Sequential()
 model.add(Conv1D(
-            filters=64,
-            kernel_size= 5,
+            filters=32,
+            kernel_size= 16,
             padding='same'
         ))
 model.add(Conv1D(
-            filters=32,
+            filters=4,
             kernel_size= 16,
             strides=16
         ))
@@ -34,13 +35,10 @@ model.add(MaxPooling1D(
 model.add(Flatten())
 model.add(Dense(128))
 model.add(Dropout(0.5))
-model.add(Dense(64))
-model.add(Dropout(0.5))
-model.add(Dense(32))
 model.add(Dense(1))
 model.add(Activation("sigmoid"))
 model.compile(loss='binary_crossentropy', 
-            optimizer=tf.optimizers.Adam(learning_rate=0.00001), #0.000001
+            optimizer=tf.optimizers.Adam(learning_rate=0.001), #0.000001
             metrics=["binary_accuracy"])
 output_shapes=([None,back,ch], [None])
 
@@ -55,10 +53,17 @@ vgen = from_generator(vgen)
 model.build(output_shapes[0])
 model.summary()
 # %%
+reduce_lr = ReduceLROnPlateau(
+                        monitor='val_loss',
+                        factor=0.5,
+                        patience=2,
+                        min_lr=0.00001
+                )
 history = model.fit(tgen,
         epochs=20, 
         batch_size=batch_size,
-        validation_data= vgen)
+        validation_data= vgen,
+        callbacks=[reduce_lr])
 #predict = model.predict(test, verbose=1)
 # %%
 plot_history(history.history,metrics=["binary_accuracy"])
