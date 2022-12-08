@@ -2,7 +2,7 @@
 import tensorflow as tf
 from keras.models import Sequential
 from keras.callbacks import ReduceLROnPlateau
-from keras.layers import Dense,Activation,Dropout,Conv1D,MaxPooling1D,Flatten
+from keras.layers import Dense,Activation,Dropout,Conv1D,MaxPooling1D,Flatten,BatchNormalization
 import numpy as np
 from generators.erp_generator import make_generators
 from utils.history import save_history,plot_history
@@ -17,26 +17,34 @@ model.add(Conv1D(
             kernel_size= 16,
             padding='same'
         ))
+model.add(BatchNormalization())
+model.add(Activation("relu"))
+model.add(Dropout(0.4))
 model.add(Conv1D(
             filters=4,
             kernel_size= 16,
             strides=16
         ))
+model.add(BatchNormalization())
+model.add(Activation("relu"))
+model.add(Dropout(0.4))
 model.add(Conv1D(
             filters=16,
             kernel_size= 7,
             padding='same'
         ))
+model.add(BatchNormalization())
+model.add(Activation("relu"))
+model.add(Dropout(0.4))
 model.add(MaxPooling1D(
             pool_size=3,
             strides=2,
             padding="same"
         ))
 model.add(Flatten())
-model.add(Dense(128))
-model.add(Dropout(0.5))
-model.add(Dense(1))
-model.add(Activation("sigmoid"))
+model.add(Dense(128,activation="sigmoid"))
+model.add(Dropout(0.4))
+model.add(Dense(1,activation="sigmoid"))
 model.compile(loss='binary_crossentropy', 
             optimizer=tf.optimizers.Adam(learning_rate=0.001), #0.000001
             metrics=["binary_accuracy"])
