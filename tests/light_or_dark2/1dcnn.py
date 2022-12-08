@@ -14,22 +14,22 @@ batch_size = 32
 model = Sequential()
 model.add(Conv1D(
             filters=32,
-            kernel_size= 16,
-            padding='same'
+            kernel_size= 50,
+            strides=5
         ))
 model.add(BatchNormalization())
 model.add(Activation("relu"))
 model.add(Dropout(0.4))
 model.add(Conv1D(
-            filters=4,
-            kernel_size= 16,
-            strides=16
+            filters=64,
+            kernel_size= 25,
+            strides=3
         ))
 model.add(BatchNormalization())
 model.add(Activation("relu"))
 model.add(Dropout(0.4))
 model.add(Conv1D(
-            filters=16,
+            filters=64,
             kernel_size= 7,
             padding='same'
         ))
