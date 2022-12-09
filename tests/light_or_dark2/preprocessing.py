@@ -4,24 +4,16 @@ from labedf import csv2,edf2
 import numpy as np
 from scipy import signal
 from pyedflib import EdfReader
-from utils.spec import instfreq as _instfreq
 from utils import edf as myedf,edflab as myedflab,signals_standardization
 PROJECT_DATA_DIR_PATH = "./dataset/lord2"
-build_dir_path = f"{PROJECT_DATA_DIR_PATH}/build"
-edfcsv_filenames = myedflab.get_edfcsv_filenames(f"{PROJECT_DATA_DIR_PATH}/ペア.csv")
+file_settings = myedflab.MergeAllCsv2EdfFileSettings(PROJECT_DATA_DIR_PATH + "/ペア.csv",list_encoding="ansi")
+edfcsv_filenames = file_settings.get_edfcsv_filenames()
 with EdfReader(f"{PROJECT_DATA_DIR_PATH}/edf/{edfcsv_filenames[0,0]}") as er:
     fs = int(myedf.get_fs(er))
-if not os.path.exists(build_dir_path):
-    os.makedirs(build_dir_path)
 
 # %% merge csv,edf
-filenames = []
-for i in range(edfcsv_filenames.shape[0]):
-    edf_path = f"{PROJECT_DATA_DIR_PATH}/edf/{edfcsv_filenames[i,0]}"
-    csv_path = f"{PROJECT_DATA_DIR_PATH}/csv/{edfcsv_filenames[i,1]}"
-    filename = f"merged_{i}"
-    csv2.merge_csv2edf(edf_path,csv_path,f"{build_dir_path}/{filename}.edf",label_header_name="LorD")
-    filenames.append(filename)
+filenames = myedflab.merge_all_csv2edf(file_settings,label_header_name="LorD")
+filenames
 # %% to hdf
 export_path = f"{PROJECT_DATA_DIR_PATH}/ex.h5"
 # 引用 : https://mori-memo.hateblo.jp/entry/2022/04/30/235815
@@ -46,7 +38,7 @@ def after_preprocessing(signals:np.ndarray,label:str):
         return signals
     return signals_standardization(signals)
 for i ,filename in enumerate(filenames):
-    edf2.split_annotations_edf2hdf(f"{build_dir_path}/{filename}.edf",
+    edf2.split_annotations_edf2hdf(f"{file_settings.build_dir_path}/{filename}.edf",
     export_path,
     is_groupby=True,
     is_overwrite= i != 0,
