@@ -5,7 +5,7 @@ import h5py
 import numpy as np
 rate = 0.6
 from utils import signals_standardization
-def make_generators(path:str,erp_size:int,batch_size:int,border:int,label_func:Callable[[str],Any],pick_func:Callable[[h5py.Dataset,bool],np.ndarray]):
+def make_generators(path:str,batch_size:int,border:int,label_func:Callable[[str],Any],pick_func:Callable[[h5py.Dataset,bool],np.ndarray]):
     with h5py.File(path, 'r') as hf:
         group = hf["annotations/Marker"]
         origin_keys = list(group.keys())
@@ -14,6 +14,7 @@ def make_generators(path:str,erp_size:int,batch_size:int,border:int,label_func:C
         train_all_keys  = all_keys[:border]
         train_dark_keys = []
         train_light_keys = []
+        erp_size = int(len(train_all_keys) / 4)
         for key in train_all_keys:
             if group[key].attrs["label"] == "dark":
                 train_dark_keys.append(key)

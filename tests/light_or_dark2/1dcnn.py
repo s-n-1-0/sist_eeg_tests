@@ -53,7 +53,7 @@ output_shapes=([None,back,ch], [None])
 def take6_pick(signal:np.ndarray,mode:bool):
     return signal[:,:back]
 
-tgen,vgen = make_generators("./dataset/lord2/train/ex.h5",216,batch_size,-216,label_func=lambda label: int(label == "dark"),pick_func=take6_pick)
+tgen,vgen = make_generators("./dataset/lord2/train/ex.h5",batch_size,-216,label_func=lambda label: int(label == "dark"),pick_func=take6_pick)
 def from_generator(gen):
     return tf.data.Dataset.from_generator(gen,output_types=(np.float32,np.float32), output_shapes=output_shapes)
 tgen = from_generator(tgen)
@@ -81,7 +81,7 @@ save_history(".",history.history)
 # %%
 model.save(".\model_e500.h5",save_format="h5")
 # %%
-test_gen = from_generator(make_test_generator(path="./dataset/lord2/test/wy/ex.h5",erp_size=216,batch_size = batch_size,label_func=lambda label: int(label == "dark"),pick_func=take6_pick))
+test_gen = from_generator(make_test_generator(path="./dataset/lord2/test/wy/ex.h5",batch_size = batch_size,label_func=lambda label: int(label == "dark"),pick_func=take6_pick))
 score = model.evaluate(test_gen, verbose=1)
 print("Test score", score[0])
 print("Test accuracy", score[1])
