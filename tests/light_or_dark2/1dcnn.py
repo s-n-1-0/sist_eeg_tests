@@ -4,7 +4,7 @@ from keras.models import Sequential
 from keras.callbacks import ReduceLROnPlateau
 from keras.layers import Dense,Activation,Dropout,Conv1D,MaxPooling1D,Flatten,BatchNormalization
 import numpy as np
-from generators.erp_generator import make_generators
+from generators.erp_generator import make_generators,make_test_generator
 from utils.history import save_history,plot_history
 # %% 
 back = 500
@@ -80,4 +80,8 @@ save_history(".",history.history)
 
 # %%
 model.save(".\model_e500.h5",save_format="h5")
+# %%
+test_gen = from_generator(make_test_generator(path="./dataset/lord2/test/wy/ex.h5",erp_size=216,batch_size = batch_size,label_func=lambda label: int(label == "dark"),pick_func=take6_pick))
+predict = model.evaluate(test_gen, verbose=1)
+predict
 # %%

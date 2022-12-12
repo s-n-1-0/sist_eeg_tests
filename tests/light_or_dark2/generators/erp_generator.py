@@ -66,4 +66,9 @@ def make_generators(path:str,erp_size:int,batch_size:int,border:int,label_func:C
                     y = []
 
     return make_train_generator,make_valid_generator
+
+def make_test_generator(**kwargs):
+    kwargs["border"] = 0
+    return make_generators(**kwargs)[1]
+
 # %%

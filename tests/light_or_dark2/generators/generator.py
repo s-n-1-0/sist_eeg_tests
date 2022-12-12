@@ -38,4 +38,7 @@ def make_generators(path:str,
 
         return generator
     return make_generator(True),make_generator(False)
+def make_test_generator(**kwargs):
+    kwargs["border"] = 0
+    return make_generators(**kwargs)[1]
 # %%
