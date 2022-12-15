@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2140575491565069137}
   - component: {fileID: 3899649209461355632}
-  - component: {fileID: 5606010534520033314}
+  - component: {fileID: 4434417406033199361}
   m_Layer: 5
   m_Name: Tile
   m_TagString: Untagged
@@ -46,7 +46,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1038259097675739457}
   m_CullTransparentMesh: 1
---- !u!114 &5606010534520033314
+--- !u!114 &4434417406033199361
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -55,7 +55,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1038259097675739457}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Script: {fileID: 11500000, guid: 3af0a9aecd33a544c811f6ffd12bd7e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
@@ -76,3 +76,5 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+  wallColor: {r: 0, g: 0, b: 0, a: 1}
+  roadColor: {r: 1, g: 1, b: 1, a: 1}
