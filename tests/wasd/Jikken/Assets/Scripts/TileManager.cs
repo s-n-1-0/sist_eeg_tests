@@ -10,14 +10,14 @@ public class TileManager : MonoBehaviour
     public int tileRange = 7;
     public int tileSize = 100;
     public GameObject tilePrefab;
-    private RectTransform[][] tiles;
-    void Start()
+    public TileImage[][] tiles;
+    void Awake()
     {  
 
         void MakeTileRow(int i)
         {
             void MakeAndSetTile(int i, int j) => tiles[i + tileRange / 2][j + tileRange / 2] =  MakeTile(new Vector2(tileSize * j, tileSize * i));
-            tiles[i + tileRange/2] = new RectTransform[tileRange];
+            tiles[i + tileRange/2] = new TileImage[tileRange];
             MakeAndSetTile(i, 0);
             for (int j = 1; j <= tileRange / 2; j++)
             {
@@ -25,25 +25,23 @@ public class TileManager : MonoBehaviour
                 MakeAndSetTile(i, j * -1);
             }
         }
-        tiles = new RectTransform[tileRange][];
+        tiles = new TileImage[tileRange][];
         MakeTileRow(0);
         for (int i = 1; i <= tileRange/2; i++)
         {
             MakeTileRow(i);
             MakeTileRow(i * -1);
         }
-
     }
-    RectTransform MakeTile(Vector2 pos)
+    TileImage MakeTile(Vector2 pos)
     {
         var child = Instantiate(tilePrefab).GetComponent<RectTransform>();
         child.SetParent(transform);
         child.localPosition = pos;
-        return child;
+        return child.GetComponent<TileImage>();
     }
-    // Update is called once per frame
-    void Update()
+    public void ResetTileColor()
     {
-        
+        for (int i = 0; i < tileRange; i++) for (int j = 0; j < tileRange; j++) tiles[i][j].ChangeColor(false);
     }
 }
