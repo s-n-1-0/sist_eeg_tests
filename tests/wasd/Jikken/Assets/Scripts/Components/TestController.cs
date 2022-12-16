@@ -6,6 +6,7 @@ public class TestController : MonoBehaviour
 {
     public RoadGenerator road;
     public TileManager tiles;
+    private CsvExporter csv = new CsvExporter();
     void Start()
     {
         Draw();
@@ -14,9 +15,19 @@ public class TestController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Alpha9))
+        {
+            Debug.Log("ìØä˙");
+            csv.Record("sync");
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            Debug.Log("åvë™èIóπ");
+            csv.Close();
+        }
         if (Input.GetKeyDown(KeyCode.W))
         {
-            
+            csv.Record("Marker");
             road.MakeNextRoad();
             Draw();
         }
