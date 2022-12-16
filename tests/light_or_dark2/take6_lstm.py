@@ -3,7 +3,7 @@ import tensorflow as tf
 from keras.models import Sequential
 from keras.layers import Dense,  LSTM,Activation,Dropout
 import numpy as np
-from generators.erp_generator import make_generators
+from generators.generator import make_generators
 from utils.history import save_history,plot_history
 # %% 
 back = 100
