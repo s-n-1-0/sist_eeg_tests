@@ -222,6 +222,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   history: 03000000
+  nowHistoryIndex: 0
 --- !u!114 &257892602
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -236,7 +237,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   road: {fileID: 257892601}
   tiles: {fileID: 2002480712}
-  nowHistoryIndex: 0
 --- !u!4 &257892603
 Transform:
   m_ObjectHideFlags: 0
@@ -501,5 +501,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileRange: 11
-  tileSize: 100
+  tileSize: 200
   tilePrefab: {fileID: 1038259097675739457, guid: 380e6c9564da7a9428d8a1a84aec6103, type: 3}
