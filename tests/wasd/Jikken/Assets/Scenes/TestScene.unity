@@ -237,6 +237,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   road: {fileID: 257892601}
   tiles: {fileID: 2002480712}
+  beforeColor: {r: 1, g: 1, b: 1, a: 1}
+  afterColor: {r: 0.5471698, g: 0.5471698, b: 0.5471698, a: 1}
 --- !u!4 &257892603
 Transform:
   m_ObjectHideFlags: 0

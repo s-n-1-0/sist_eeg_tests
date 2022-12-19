@@ -7,6 +7,8 @@ public class TestController : MonoBehaviour
     public RoadGenerator road;
     public TileManager tiles;
     private CsvExporter csv = new CsvExporter();
+    public Color beforeColor;
+    public Color afterColor;
     void Start()
     {
         Draw();
@@ -62,7 +64,7 @@ public class TestController : MonoBehaviour
             var d = road.history[road.nowHistoryIndex - i];
             nowPos += d.ToDirectionVec2() * -1;
             if (nowPos.x >= tiles.tileRange || nowPos.x < 0 || nowPos.y >= tiles.tileRange || nowPos.y < 0) continue;
-            tiles.tiles[(int)nowPos.y][(int)nowPos.x].ChangeColor(true);
+            tiles.tiles[(int)nowPos.y][(int)nowPos.x].ChangeColor(afterColor);
         }
         nowPos = new Vector2(tiles.tileRange / 2, tiles.tileRange / 2);
         for (int i = 0; i < 10; i++)
@@ -71,7 +73,7 @@ public class TestController : MonoBehaviour
             var d = road.history[road.nowHistoryIndex + i];
             nowPos += d.ToDirectionVec2();
             if (nowPos.x >= tiles.tileRange || nowPos.x < 0 || nowPos.y >= tiles.tileRange || nowPos.y < 0) continue;
-            tiles.tiles[(int)nowPos.y][(int)nowPos.x].ChangeColor(true);
+            tiles.tiles[(int)nowPos.y][(int)nowPos.x].ChangeColor(beforeColor);
         }
     }
 }

@@ -5,15 +5,14 @@ using UnityEngine.UI;
 public class TileImage : Image
 {
     private Color wallColor = Color.black;
-    private Color roadColor = Color.white;
 
     protected override void Awake()
     {
         base.Awake();
-        ChangeColor(false);
+        ChangeColor(null);
     }
-    public void ChangeColor(bool isRoad)
+    public void ChangeColor(Color? c)
     {
-        this.color = isRoad ? roadColor : wallColor;
+        this.color = c != null ? (Color)c : wallColor;
     }
 }

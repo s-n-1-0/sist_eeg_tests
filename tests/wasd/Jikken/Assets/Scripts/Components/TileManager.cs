@@ -42,6 +42,6 @@ public class TileManager : MonoBehaviour
     }
     public void ResetTileColor()
     {
-        for (int i = 0; i < tileRange; i++) for (int j = 0; j < tileRange; j++) tiles[i][j].ChangeColor(false);
+        for (int i = 0; i < tileRange; i++) for (int j = 0; j < tileRange; j++) tiles[i][j].ChangeColor(null);
     }
 }
