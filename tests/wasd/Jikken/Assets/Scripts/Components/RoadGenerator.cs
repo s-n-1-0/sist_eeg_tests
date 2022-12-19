@@ -13,7 +13,7 @@ public class RoadGenerator : MonoBehaviour
     {
         for (int i = 0; i < 5; i++) history.Add(RoadDirection.Right);
         nowHistoryIndex = 0;
-        for (int i = 0; i < 5; i++) history.Add(RoadDirection.Bottom);
+        for (int i = 0; i < 5; i++) history.Add(RoadDirection.Down);
     }
 
     /**
@@ -27,12 +27,12 @@ public class RoadGenerator : MonoBehaviour
             var last = history.Last();
             switch (last)
             {
-                case RoadDirection.Top:
-                case RoadDirection.Bottom:
+                case RoadDirection.Up:
+                case RoadDirection.Down:
                     return r == 0 ? RoadDirection.Left : RoadDirection.Right;
                 case RoadDirection.Left:
                 case RoadDirection.Right:
-                    return r == 0 ? RoadDirection.Top : RoadDirection.Bottom;
+                    return r == 0 ? RoadDirection.Up : RoadDirection.Down;
             }
             return RoadDirection.Right;//–³Œø
         }
@@ -48,16 +48,16 @@ public class RoadGenerator : MonoBehaviour
 }
 public enum RoadDirection
 {
-    Top = 0, Bottom = 1, Left = 2, Right = 3
+    Up = 0, Down = 1, Left = 2, Right = 3
 }
 public static partial class EnumExtend
 {
-    public static Vector2 GetDirectionVec2(this RoadDirection param)
+    public static Vector2 ToDirectionVec2(this RoadDirection param)
     {
         switch (param)
         {
-            case RoadDirection.Top: return Vector2.up;
-            case RoadDirection.Bottom: return Vector2.down;
+            case RoadDirection.Up: return Vector2.up;
+            case RoadDirection.Down: return Vector2.down;
             case RoadDirection.Left: return Vector2.left;
             case RoadDirection.Right: return Vector2.right;
         }
@@ -67,8 +67,8 @@ public static partial class EnumExtend
     {
         switch (param)
         {
-            case RoadDirection.Top: return "T";
-            case RoadDirection.Bottom: return "B";
+            case RoadDirection.Up: return "T";
+            case RoadDirection.Down: return "B";
             case RoadDirection.Left: return "L";
             case RoadDirection.Right: return "R";
         }

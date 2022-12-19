@@ -27,7 +27,7 @@ public class TestController : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.W))
         {
-            Move(RoadDirection.Top);
+            Move(RoadDirection.Up);
         }
         else if (Input.GetKeyDown(KeyCode.A))
         {
@@ -35,7 +35,7 @@ public class TestController : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.S))
         {
-            Move(RoadDirection.Bottom);
+            Move(RoadDirection.Down);
         }
         else if (Input.GetKeyDown(KeyCode.D))
         {
@@ -60,7 +60,7 @@ public class TestController : MonoBehaviour
         {
             if (-1 == road.nowHistoryIndex - i) break;
             var d = road.history[road.nowHistoryIndex - i];
-            nowPos += d.GetDirectionVec2() * -1;
+            nowPos += d.ToDirectionVec2() * -1;
             if (nowPos.x >= tiles.tileRange || nowPos.x < 0 || nowPos.y >= tiles.tileRange || nowPos.y < 0) continue;
             tiles.tiles[(int)nowPos.y][(int)nowPos.x].ChangeColor(true);
         }
@@ -69,7 +69,7 @@ public class TestController : MonoBehaviour
         {
             if (road.history.Count == road.nowHistoryIndex + i) break;
             var d = road.history[road.nowHistoryIndex + i];
-            nowPos += d.GetDirectionVec2();
+            nowPos += d.ToDirectionVec2();
             if (nowPos.x >= tiles.tileRange || nowPos.x < 0 || nowPos.y >= tiles.tileRange || nowPos.y < 0) continue;
             tiles.tiles[(int)nowPos.y][(int)nowPos.x].ChangeColor(true);
         }
