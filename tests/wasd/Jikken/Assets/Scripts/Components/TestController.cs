@@ -6,11 +6,12 @@ public class TestController : MonoBehaviour
 {
     public RoadGenerator road;
     public TileManager tiles;
-    private CsvExporter csv = new CsvExporter();
+    private CsvExporter csv;
     public Color beforeColor;
     public Color afterColor;
     void Start()
     {
+        csv = new CsvExporter();
         Draw();
     }
 
