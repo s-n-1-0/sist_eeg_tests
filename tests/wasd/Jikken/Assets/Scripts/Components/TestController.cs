@@ -27,8 +27,27 @@ public class TestController : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.W))
         {
+            Move(RoadDirection.Top);
+        }
+        else if (Input.GetKeyDown(KeyCode.A))
+        {
+            Move(RoadDirection.Left);
+        }
+        else if (Input.GetKeyDown(KeyCode.S))
+        {
+            Move(RoadDirection.Bottom);
+        }
+        else if (Input.GetKeyDown(KeyCode.D))
+        {
+            Move(RoadDirection.Right);
+        }
+    }
+    private void Move(RoadDirection rd)
+    {
+        bool isMoved = road.MakeNextRoad(rd);
+        if (isMoved)
+        {
             csv.Record("Marker");
-            road.MakeNextRoad();
             Draw();
         }
     }

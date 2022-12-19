@@ -16,7 +16,10 @@ public class RoadGenerator : MonoBehaviour
         for (int i = 0; i < 5; i++) history.Add(RoadDirection.Bottom);
     }
 
-    public void MakeNextRoad()
+    /**
+     * i‚Þ‚±‚Æ‚ª‚Å‚«‚½‚çtrue‚ª•Ô‚é
+     */
+    public bool MakeNextRoad(RoadDirection rd)
     {
         RoadDirection MakeNextDirection()
         {
@@ -33,27 +36,30 @@ public class RoadGenerator : MonoBehaviour
             }
             return RoadDirection.Right;//–³Œø
         }
+        if (rd != history[nowHistoryIndex]) return false;
         nowHistoryIndex++;
-        if (history[nowHistoryIndex - 1] == history[nowHistoryIndex]) return;//’¼i‚È‚ç
+        if (history[nowHistoryIndex - 1] == history[nowHistoryIndex]) return true;//’¼i‚È‚ç
         var newRoad = new RoadDirection[Random.Range(4, 10)];
         System.Array.Fill(newRoad,MakeNextDirection());
         history.AddRange(newRoad);
+        return true;
     }
-    public enum RoadDirection
-    {
-        Top = 0,Bottom = 1,Left = 2,Right = 3
-    }
+
+}
+public enum RoadDirection
+{
+    Top = 0, Bottom = 1, Left = 2, Right = 3
 }
 public static partial class EnumExtend
 {
-    public static Vector2 GetDirectionVec2(this RoadGenerator.RoadDirection param)
+    public static Vector2 GetDirectionVec2(this RoadDirection param)
     {
         switch (param)
         {
-            case RoadGenerator.RoadDirection.Top: return Vector2.up;
-            case RoadGenerator.RoadDirection.Bottom: return Vector2.down;
-            case RoadGenerator.RoadDirection.Left: return Vector2.left;
-            case RoadGenerator.RoadDirection.Right: return Vector2.right;
+            case RoadDirection.Top: return Vector2.up;
+            case RoadDirection.Bottom: return Vector2.down;
+            case RoadDirection.Left: return Vector2.left;
+            case RoadDirection.Right: return Vector2.right;
         }
         return Vector2.zero;
     }
