@@ -1,17 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TestController : MonoBehaviour
 {
+    public static int testCount = 0;
     public RoadGenerator road;
     public TileManager tiles;
+    public GameObject waitUi;
     private CsvExporter csv;
     public Color beforeColor,afterColor,waitColor = Color.red,goColor = Color.green;
     public float waitTime = 1f;
     private bool isClicked = false;
     void Start()
     {
+        testCount += 1;
         csv = new CsvExporter();
         Draw();
     }
@@ -19,15 +23,15 @@ public class TestController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha9))
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             Debug.Log("同期");
             csv.Record("sync","");
+            waitUi.SetActive(false);
         }
         if (Input.GetKeyDown(KeyCode.Alpha0))
         {
-            Debug.Log("計測終了");
-            csv.Close();
+            EndTest();
         }
         if (Input.GetKeyDown(KeyCode.W))
         {
@@ -64,7 +68,8 @@ public class TestController : MonoBehaviour
     {
         isClicked = true;
         yield return new WaitForSeconds(waitTime);
-        isClicked = false;
+        if (road.nowHistoryIndex == 33) EndTest();
+        else isClicked = false;
     }
     public void Draw()
     {
@@ -88,5 +93,11 @@ public class TestController : MonoBehaviour
             if (nowPos.x >= tiles.tileRange || nowPos.x < 0 || nowPos.y >= tiles.tileRange || nowPos.y < 0) continue;
             tiles.tiles[(int)nowPos.y][(int)nowPos.x].ChangeColor(beforeColor);
         }
+    }
+    private void EndTest()
+    {
+        Debug.Log("計測終了");
+        csv.Close();
+        SceneManager.LoadScene("EndTestScene");
     }
 }
