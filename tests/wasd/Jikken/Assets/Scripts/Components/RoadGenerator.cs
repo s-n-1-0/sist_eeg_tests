@@ -39,7 +39,7 @@ public class RoadGenerator : MonoBehaviour
         if (rd != history[nowHistoryIndex]) return false;
         nowHistoryIndex++;
         if (history[nowHistoryIndex - 1] == history[nowHistoryIndex]) return true;//íºêiÇ»ÇÁ
-        var newRoad = new RoadDirection[Random.Range(4, 10)];
+        var newRoad = new RoadDirection[Random.Range(2, 6)];
         System.Array.Fill(newRoad,MakeNextDirection());
         history.AddRange(newRoad);
         return true;
