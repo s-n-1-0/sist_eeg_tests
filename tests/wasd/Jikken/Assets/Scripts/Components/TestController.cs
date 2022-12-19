@@ -18,7 +18,7 @@ public class TestController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha9))
         {
             Debug.Log("“¯Šú");
-            csv.Record("sync");
+            csv.Record("sync","");
         }
         if (Input.GetKeyDown(KeyCode.Alpha0))
         {
@@ -47,7 +47,7 @@ public class TestController : MonoBehaviour
         bool isMoved = road.MakeNextRoad(rd);
         if (isMoved)
         {
-            csv.Record("Marker");
+            csv.Record("Marker",rd.ToLabelString());
             Draw();
         }
     }

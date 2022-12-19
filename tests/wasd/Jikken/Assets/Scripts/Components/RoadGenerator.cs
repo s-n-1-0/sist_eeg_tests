@@ -63,4 +63,15 @@ public static partial class EnumExtend
         }
         return Vector2.zero;
     }
+    public static string ToLabelString(this RoadDirection param)
+    {
+        switch (param)
+        {
+            case RoadDirection.Top: return "T";
+            case RoadDirection.Bottom: return "B";
+            case RoadDirection.Left: return "L";
+            case RoadDirection.Right: return "R";
+        }
+        return "";
+    }
 }
