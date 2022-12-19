@@ -50,10 +50,12 @@ public class TestController : MonoBehaviour
     private void Move(RoadDirection rd)
     {
         if (isClicked) return;
-        bool isMoved = road.MakeNextRoad(rd);
+        bool isMoved = road.WalkRoad(rd);
         if (isMoved)
         {
-            csv.Record("Marker",rd.ToLabelString());
+            string label = (road.nowHistoryIndex > 3) ? road.history[road.nowHistoryIndex - 3].ToLabelString() + road.history[road.nowHistoryIndex - 2].ToLabelString() + road.history[road.nowHistoryIndex - 1].ToLabelString() : rd.ToLabelString();
+            csv.Record("Marker",label);
+            road.MakeNextRoad();
             Draw();
             StartCoroutine(WaitTime());
         }

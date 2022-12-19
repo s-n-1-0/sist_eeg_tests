@@ -24,7 +24,13 @@ public class RoadGenerator : MonoBehaviour
     /**
      * 進むことができたらtrueが返る
      */
-    public bool MakeNextRoad(RoadDirection rd)
+    public bool WalkRoad(RoadDirection rd)
+    {
+        if (rd != history[nowHistoryIndex]) return false;
+        nowHistoryIndex++;
+        return true;//直進なら
+    }
+    public void MakeNextRoad()
     {
         RoadDirection MakeNextDirection()
         {
@@ -41,13 +47,10 @@ public class RoadGenerator : MonoBehaviour
             }
             return RoadDirection.Right;//無効
         }
-        if (rd != history[nowHistoryIndex]) return false;
-        nowHistoryIndex++;
-        if (history[nowHistoryIndex - 1] == history[nowHistoryIndex]) return true;//直進なら
+        if (history[nowHistoryIndex - 1] == history[nowHistoryIndex]) return;//直進なら
         var newRoad = new RoadDirection[Random.Range(2, 6)];
         System.Array.Fill(newRoad,MakeNextDirection());
         history.AddRange(newRoad);
-        return true;
     }
 
 }
