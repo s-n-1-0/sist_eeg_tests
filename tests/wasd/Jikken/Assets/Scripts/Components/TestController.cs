@@ -7,8 +7,9 @@ public class TestController : MonoBehaviour
     public RoadGenerator road;
     public TileManager tiles;
     private CsvExporter csv;
-    public Color beforeColor;
-    public Color afterColor;
+    public Color beforeColor,afterColor,waitColor = Color.red,goColor = Color.green;
+    public float waitTime = 1f;
+    private bool isClicked = false;
     void Start()
     {
         csv = new CsvExporter();
@@ -44,21 +45,30 @@ public class TestController : MonoBehaviour
         {
             Move(RoadDirection.Right);
         }
+        tiles.tiles[tiles.tileRange / 2][tiles.tileRange / 2].color = (isClicked) ? waitColor : goColor;
     }
     private void Move(RoadDirection rd)
     {
+        if (isClicked) return;
         bool isMoved = road.MakeNextRoad(rd);
         if (isMoved)
         {
             csv.Record("Marker",rd.ToLabelString());
             Draw();
+            StartCoroutine(WaitTime());
         }
+    }
+    private IEnumerator WaitTime()
+    {
+        isClicked = true;
+        yield return new WaitForSeconds(waitTime);
+        isClicked = false;
     }
     public void Draw()
     {
         tiles.ResetTileColor();
         var nowPos = new Vector2(tiles.tileRange / 2, tiles.tileRange / 2);
-        tiles.tiles[tiles.tileRange / 2][tiles.tileRange / 2].color = Color.red;
+        //tiles.tiles[tiles.tileRange / 2][tiles.tileRange / 2].color = Color.red;
         for (int i = 1; i < 10; i++)
         {
             if (-1 == road.nowHistoryIndex - i) break;
