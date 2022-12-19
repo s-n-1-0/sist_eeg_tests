@@ -11,9 +11,14 @@ public class RoadGenerator : MonoBehaviour
     public int nowHistoryIndex = 0;
     void Awake()
     {
-        for (int i = 0; i < 5; i++) history.Add(RoadDirection.Right);
-        nowHistoryIndex = 0;
-        for (int i = 0; i < 5; i++) history.Add(RoadDirection.Down);
+        var newRoad = new RoadDirection[Random.Range(2, 6)];
+        var r = Random.Range(0, 2);
+        System.Array.Fill(newRoad, r == 0 ? RoadDirection.Left : RoadDirection.Right);
+        history.AddRange(newRoad);
+        newRoad = new RoadDirection[Random.Range(2, 6)];
+        r = Random.Range(0, 2);
+        System.Array.Fill(newRoad, r == 0 ? RoadDirection.Up : RoadDirection.Down);
+        history.AddRange(newRoad);
     }
 
     /**
