@@ -5,7 +5,8 @@ using System.Linq;
 using UnityEngine;
 
 public class RoadGenerator : MonoBehaviour
-{   
+{
+    [HideInInspector]
     public List<RoadDirection> history = new List<RoadDirection>();
     [HideInInspector]
     public int nowHistoryIndex = 0;
