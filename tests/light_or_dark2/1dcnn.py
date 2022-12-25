@@ -4,7 +4,7 @@ from keras.models import Sequential
 from keras.callbacks import ReduceLROnPlateau
 from keras.layers import Dense,Activation,Dropout,Conv1D,MaxPooling1D,Flatten,BatchNormalization
 import numpy as np
-from generators.erp_generator import make_generators,make_test_generator
+from generators.generator import make_generators,make_test_generator
 from utils.history import save_history,plot_history
 # %% 
 back = 500

@@ -4,7 +4,7 @@ from keras import Model
 from keras.models import Sequential
 from keras.layers import Dense,  Flatten,MaxPooling1D,Dropout,Conv1D,LeakyReLU,concatenate
 import numpy as np
-from erp_generator import make_generators
+from generators.generator import make_generators
 from utils.history import save_history,plot_history
 from utils.keras.layers import Maxout
 # %% 
