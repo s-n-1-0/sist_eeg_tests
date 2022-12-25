@@ -8,13 +8,13 @@ using UnityEngine;
 public class CsvExporter
 {
     public static CsvExporter standard = new CsvExporter();
-    public  string filename = $"./export_{DateTime.Now.ToString().Replace("/", "_").Replace(" ", "_").Replace(":", "")}";
+    public  string filePath = $"./export_{DateTime.Now.ToString().Replace("/", "_").Replace(" ", "_").Replace(":", "")}.csv";
     private StreamWriter sw;
     private System.Diagnostics.Stopwatch totalStopwatch = new System.Diagnostics.Stopwatch();
     private System.Diagnostics.Stopwatch syncStopwatch = new System.Diagnostics.Stopwatch();
     public CsvExporter()
     {
-        sw = new StreamWriter($"{filename}_{TestController.testCount}.csv", true, Encoding.UTF8);
+        sw = new StreamWriter(filePath, true, Encoding.UTF8);
         string[] headers = { "Annotation","Label","Total Time", "Sync Elapsed Time" };
         sw.WriteLine(string.Join(",", headers));
         totalStopwatch.Start();
