@@ -9,14 +9,12 @@ public class TestController : MonoBehaviour
     public RoadGenerator road;
     public TileManager tiles;
     public GameObject waitUi;
-    private CsvExporter csv;
     public Color beforeColor,afterColor,waitColor = Color.red,goColor = Color.green;
     public float waitTime = 1f;
     private bool isClicked = false;
     void Start()
     {
         testCount += 1;
-        csv = new CsvExporter();
         Draw();
     }
 
@@ -26,7 +24,7 @@ public class TestController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             Debug.Log("ìØä˙");
-            csv.Record("sync","");
+            CsvExporter.standard.Record("sync", "");
             waitUi.SetActive(false);
         }
         if (Input.GetKeyDown(KeyCode.Alpha0))
@@ -58,7 +56,7 @@ public class TestController : MonoBehaviour
         if (isMoved)
         {
             string label = (road.nowHistoryIndex > 3) ? road.history[road.nowHistoryIndex - 3].ToLabelString() + road.history[road.nowHistoryIndex - 2].ToLabelString() + road.history[road.nowHistoryIndex - 1].ToLabelString() : rd.ToLabelString();
-            csv.Record("Marker",label);
+            CsvExporter.standard.Record("Marker",label);
             road.MakeNextRoad();
             Draw();
             StartCoroutine(WaitTime());
@@ -97,7 +95,6 @@ public class TestController : MonoBehaviour
     private void EndTest()
     {
         Debug.Log("åvë™èIóπ");
-        csv.Close();
         SceneManager.LoadScene("EndTestScene");
     }
 }

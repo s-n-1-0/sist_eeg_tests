@@ -7,7 +7,8 @@ using UnityEngine;
 
 public class CsvExporter
 {
-    public static string filename = $"./export_{DateTime.Now.ToString().Replace("/", "_").Replace(" ", "_").Replace(":", "")}";
+    public static CsvExporter standard = new CsvExporter();
+    public  string filename = $"./export_{DateTime.Now.ToString().Replace("/", "_").Replace(" ", "_").Replace(":", "")}";
     private StreamWriter sw;
     private System.Diagnostics.Stopwatch totalStopwatch = new System.Diagnostics.Stopwatch();
     private System.Diagnostics.Stopwatch syncStopwatch = new System.Diagnostics.Stopwatch();

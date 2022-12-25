@@ -16,6 +16,7 @@ public class EndTestController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
+            CsvExporter.standard.Close();
             #if UNITY_EDITOR
                         UnityEditor.EditorApplication.isPlaying = false;
             #else
