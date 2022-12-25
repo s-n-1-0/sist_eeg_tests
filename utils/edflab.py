@@ -33,7 +33,18 @@ def merge_all_csv2edf(file_settings:MergeAllCsv2EdfFileSettings,**csv2edf_option
         csv2.merge_csv2edf(edf_path,csv_path,f"{file_settings.build_dir_path}/{filename}.edf",**csv2edf_options)
         filenames.append(filename)
     return filenames
-
+def merge_all_unity2edf(file_settings:MergeAllCsv2EdfFileSettings,**csv2edf_options):
+    if not os.path.exists(file_settings.build_dir_path):
+        os.makedirs(file_settings.build_dir_path)
+    edfcsv_filenames = file_settings.get_edfcsv_filenames()
+    filenames:list[str] = []
+    for i in range(edfcsv_filenames.shape[0]):
+        edf_path = f"{file_settings.root_path}/edf/{edfcsv_filenames[i,0]}"
+        csv_path = f"{file_settings.root_path}/csv/{edfcsv_filenames[i,1]}"
+        filename = f"{file_settings.export_edf_name}_{i}"
+        merge_unity2edf(edf_path,csv_path,f"{file_settings.build_dir_path}/{filename}.edf",**csv2edf_options)
+        filenames.append(filename)
+    return filenames
 def merge_unity2edf(edf_path:str,
                 csv_path:str,
                 export_path:Optional[str] = None,
@@ -65,6 +76,8 @@ def merge_unity2edf(edf_path:str,
     rdf = pd.read_csv(csv_path,dtype=rlab_dtype)
     rdf_annos = rdf.values[:,0]
     rdf_sync_times = rdf.values[:,2]
+    rdf_labels = rdf[label_header_name].values if label_header_name is not None else [None] * len(rdf_annos)
+
     edf_annos = edf.get_annotations(edf_reader)
     sync_edf_annos = [ea for ea in edf_annos if ea[0] == sync_marker_name]
     sync_rdf_annos_indexes = [i for i,r in enumerate(list(rdf_annos)) if r == sync_marker_name ]
@@ -73,18 +86,20 @@ def merge_unity2edf(edf_path:str,
     start_time_count:int = -1
     start_time_end:float = None
     results:list[tuple[float,float]] = []
-    for ann, time_run in zip(rdf_annos,rdf_sync_times):
+    for ann, time_run,rdf_labels in zip(rdf_annos,rdf_sync_times,rdf_labels):
         if ann == sync_marker_name:
             start_time_count += 1
             start_time_end = rdf_sync_times[sync_rdf_annos_indexes[start_time_count]]
         offset_time_run = time_run - start_time_end + sync_edf_annos[start_time_count][1]
         if ann != marker_name:
             continue
-        results.append(offset_time_run)
+        results.append((offset_time_run,rdf_labels))
 
     def copied_func(_ ,wedf:pyedflib.EdfWriter,signals:list[ndarray]):
-        for otr in results:
+        for otr,label in results:
             mn = marker_name
+            if label is not None:
+                mn += f"_{label}"
             wedf.writeAnnotation(otr,-1,mn)
             if not (end_marker_name is None):
                 wedf.writeAnnotation(otr + end_marker_offset,-1,end_marker_name)

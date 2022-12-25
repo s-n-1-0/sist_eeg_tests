@@ -2,3 +2,4 @@
 from . import spec, pass_range
 from .edf import * 
 from .std import * 
+from .mysignal import *
