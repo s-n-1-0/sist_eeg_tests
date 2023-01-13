@@ -9,7 +9,7 @@ from utils.history import save_history,plot_history
 from sklearn.metrics import confusion_matrix
 import pandas as pd
 # %% 
-back = 300
+back = 500
 ch = 10
 batch_size = 32
 dataset_path = "./dataset/lord2/train/ex.h5"

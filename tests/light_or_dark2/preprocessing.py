@@ -12,7 +12,7 @@ with EdfReader(f"{DATASET_DIR_PATH}/edf/{edfcsv_filenames[0,0]}") as er:
     fs = int(myedf.get_fs(er))
 
 # %% merge csv,edf
-filenames = myedflab.merge_all_csv2edf(file_settings,label_header_name="LorD",marker_names=["Marker","Wait"])
+filenames = myedflab.merge_all_csv2edf(file_settings,label_header_name="LorD",marker_names=["Marker","Wait"],end_marker_offset=0.1)
 filenames
 # %% to hdf
 export_path = f"{DATASET_DIR_PATH}/ex.h5"
@@ -29,7 +29,8 @@ for i ,filename in enumerate(filenames):
     is_groupby=True,
     is_overwrite= i != 0,
     before_preprocessing_func= before_preprocessing,
-    after_preprocessing_func=after_preprocessing
+    after_preprocessing_func=after_preprocessing,
+    min_signal_size=500
     )
 
 # %%
