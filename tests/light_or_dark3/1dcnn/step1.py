@@ -8,14 +8,10 @@ from keras.layers import Dense,Activation,Dropout,Conv1D,MaxPooling1D,Flatten,Ba
 import numpy as np
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from generator import make_generators,split_dataset
+from common import *
 from utils.history import save_history,plot_history
 from sklearn.metrics import confusion_matrix
 import pandas as pd
-# %% 
-back = 500
-ch = 10
-batch_size = 32
-dataset_path = "./dataset/lord2/train/ex.h5"
 # %% split dataset
 step1_dataset,step2_dataset = split_dataset(dataset_path,1430)
 # %%
@@ -58,14 +54,8 @@ model2.add(Dense(1,activation="sigmoid"))
 model2.compile(loss='binary_crossentropy', 
             optimizer=tf.optimizers.Adam(learning_rate=0.001), #0.000001
             metrics=["binary_accuracy"])
-output_shapes=([None,back,ch], [None])
 
-def take6_pick(signal:np.ndarray,mode:bool):
-    return signal[:,:back]
-
-tgen,vgen = make_generators(True,dataset_path,step1_dataset,batch_size,label_func=lambda label: int(label == "dark"),pick_func=take6_pick)
-def from_generator(gen):
-    return tf.data.Dataset.from_generator(gen,output_types=(np.float32,np.float32), output_shapes=output_shapes)
+tgen,vgen = make_generators(True,dataset_path,step1_dataset,batch_size,label_func=lambda label: int(label == "dark"),pick_func=pick)
 tgen = from_generator(tgen)
 vgen = from_generator(vgen)
 model2.build(output_shapes[0])
