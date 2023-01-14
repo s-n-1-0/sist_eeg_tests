@@ -55,3 +55,5 @@ def make_generators(is_step1:bool,
         return generator
     return make_generator(True),make_generator(False)
 # %%
+def make_test_generator(**kwargs):
+    return make_generators(**kwargs)[1]

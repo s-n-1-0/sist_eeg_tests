@@ -50,6 +50,8 @@ model2.add(model)
 model2.add(Flatten())
 model2.add(Dense(128,activation="sigmoid"))
 model2.add(Dropout(0.4))
+model2.add(Dense(128,activation="sigmoid"))
+model2.add(Dropout(0.4))
 model2.add(Dense(1,activation="sigmoid"))
 model2.compile(loss='binary_crossentropy', 
             optimizer=tf.optimizers.Adam(learning_rate=0.001), #0.000001
