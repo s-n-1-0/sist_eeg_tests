@@ -49,11 +49,13 @@ model.add(MaxPooling1D(
             strides=2,
             padding="same"
         ))
-model.add(Flatten())
-model.add(Dense(128,activation="sigmoid"))
-model.add(Dropout(0.4))
-model.add(Dense(1,activation="sigmoid"))
-model.compile(loss='binary_crossentropy', 
+model2 = Sequential()
+model2.add(model)
+model2.add(Flatten())
+model2.add(Dense(128,activation="sigmoid"))
+model2.add(Dropout(0.4))
+model2.add(Dense(1,activation="sigmoid"))
+model2.compile(loss='binary_crossentropy', 
             optimizer=tf.optimizers.Adam(learning_rate=0.001), #0.000001
             metrics=["binary_accuracy"])
 output_shapes=([None,back,ch], [None])
@@ -66,8 +68,8 @@ def from_generator(gen):
     return tf.data.Dataset.from_generator(gen,output_types=(np.float32,np.float32), output_shapes=output_shapes)
 tgen = from_generator(tgen)
 vgen = from_generator(vgen)
-model.build(output_shapes[0])
-model.summary()
+model2.build(output_shapes[0])
+model2.summary()
 # %%
 reduce_lr = ReduceLROnPlateau(
                         monitor='val_loss',
@@ -75,7 +77,7 @@ reduce_lr = ReduceLROnPlateau(
                         patience=2,
                         min_lr=0.00001
                 )
-history = model.fit(tgen,
+history = model2.fit(tgen,
         epochs=20, 
         batch_size=batch_size,
         validation_data= vgen,
@@ -86,10 +88,18 @@ plot_history(history.history,metrics=["binary_accuracy"],is_loss=False)
 save_history(".",history.history)
 
 # %%
-model.save(".\model.h5",save_format="h5")
+def save_dataset_list(fn:str,data:list):
+    with open(fn, 'w') as f:
+        for x in data:
+            f.write(x + "\n")
+save_dataset_list("./step1_1.txt",step1_dataset[1])
+save_dataset_list("./step2_0.txt",step2_dataset[0])
+save_dataset_list("./step2_1.txt",step2_dataset[1])
+model.save("./step1_model.h5")
+model2.save("./step1_model2.h5")
 # %% predict
 labels = [1, 0]
-_y_pred = model.predict(vgen, verbose=1)
+_y_pred = model2.predict(vgen, verbose=1)
 y_pred = [1.0 if p[0] > 0.5 else 0 for p in _y_pred]
 x_valid = []
 y_true = []
