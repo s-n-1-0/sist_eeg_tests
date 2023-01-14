@@ -24,7 +24,6 @@ def make_generators(is_step1:bool,
                     path:str,
                     dataset:tuple[list],
                     batch_size:int,
-                    label_func:Callable[[str],Any],
                     pick_func:Callable[[h5py.Dataset,bool],np.ndarray],
                     transpose_rule = [0,2,1]):
     train,valid = dataset
@@ -46,7 +45,7 @@ def make_generators(is_step1:bool,
                     if is_step1:
                         y.append(int(keys[count].startswith("Marker")))
                     else:
-                        y.append(label_func(_dataset.attrs["label"]))
+                        y.append(int(_dataset.attrs["label"] == "dark"))
                     count += 1
                     if count % batch_size == 0:
                         yield (np.array(x,dtype=np.float32).transpose(*transpose_rule),np.array(y,dtype=np.float32))

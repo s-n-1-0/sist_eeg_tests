@@ -55,7 +55,7 @@ model2.compile(loss='binary_crossentropy',
             optimizer=tf.optimizers.Adam(learning_rate=0.001), #0.000001
             metrics=["binary_accuracy"])
 
-tgen,vgen = make_generators(True,dataset_path,step1_dataset,batch_size,label_func=lambda label: int(label == "dark"),pick_func=pick)
+tgen,vgen = make_generators(True,dataset_path,step1_dataset,batch_size,pick_func=pick)
 tgen = from_generator(tgen)
 vgen = from_generator(vgen)
 model2.build(output_shapes[0])
