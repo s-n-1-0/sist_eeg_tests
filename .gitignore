@@ -11,3 +11,4 @@ dataset/*
 **/*.hdf
 **/*.h5
 **/*.asv
+**/*.set
