@@ -67,11 +67,11 @@ model.summary()
 reduce_lr = ReduceLROnPlateau(
                         monitor='val_loss',
                         factor=0.5,
-                        patience=8,
+                        patience=4,
                         min_lr=0.000001
                 )
 history = model.fit(tgen,
-        epochs=1000, 
+        epochs=300, 
         batch_size=batch_size,
         validation_data= vgen,
         callbacks=[reduce_lr])
