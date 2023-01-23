@@ -12,7 +12,7 @@ function preprocessing_eeg(full_filepath,export_dir_path)
     eeg = pop_biosig({convertStringsToChars(filepath + "\" + filename + ext)});
     %%フィルタリング
     eeg = pop_eegfiltnew(eeg,1,[]);
-    eeg = pop_eegfiltnew(eeg,[],40);
+    eeg = pop_eegfiltnew(eeg,[],30);
     eeg = pop_epoch(eeg,{"Marker__dark" "Marker__light"},[-1 2]); %#ok<CLARRSTR> 
     disp("--")
     is_after_reject = 0;%0だとディスプレイ表示のリジェクトする前と母数が一致
