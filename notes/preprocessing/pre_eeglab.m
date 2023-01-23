@@ -12,11 +12,11 @@ function preprocessing_eeg(full_filepath,export_dir_path)
     eeg = pop_biosig({convertStringsToChars(filepath + "\" + filename + ext)});
     %%フィルタリング
     eeg = pop_eegfiltnew(eeg,1,[]);
-    eeg = pop_eegfiltnew(eeg,[],40);
+    eeg = pop_eegfiltnew(eeg,[],30);
     eeg = pop_epoch(eeg,{"Marker__dark" "Marker__light"},[-1 2]); %#ok<CLARRSTR> 
     disp("--")
     is_after_reject = 0;%0だとディスプレイ表示のリジェクトする前と母数が一致
-    eeg = pop_eegthresh(eeg,1,[1:10],-200,200,-1,1.998,0,is_after_reject,0); %"Find abnormal values" debug : 200
+    eeg = pop_eegthresh(eeg,1,[1:10],-100,100,-1,1.998,0,is_after_reject,0); %"Find abnormal values" debug : 200
     eeg = pop_rejtrend(eeg,1,[1:10],1500,0.5,0.3,0,is_after_reject,0);
     eeg = pop_jointprob(eeg,1,[1:10],5,5,0,is_after_reject,0,0,0);
     eeg = pop_rejkurt(eeg,1,[1:10],5,5,0,is_after_reject,0,0,0);
