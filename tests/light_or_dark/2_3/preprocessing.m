@@ -1,11 +1,11 @@
 %% 
-filelst = dir("..\..\dataset\lord2\train\build\*.edf");
+filelst = dir("..\..\..\dataset\lord2\train\build\*.edf");
 sz = size(filelst);
 disp(sz(1));
 %% 
 for i = 1:sz
     f = filelst(i);
-    preprocessing_eeg(f.folder + "\" + f.name,"..\..\dataset\lord2\train\pre")
+    preprocessing_eeg(f.folder + "\" + f.name,"..\..\..\dataset\lord2\train\pre")
 end
 function preprocessing_eeg(full_filepath,export_dir_path)
     [filepath,filename,ext] = fileparts(full_filepath);
