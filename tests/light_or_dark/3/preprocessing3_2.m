@@ -1,15 +1,23 @@
-%% 
-filelst = dir("..\..\..\dataset\lord2\train\build\*.edf");
-markers = {"Marker__dark" "Marker__light" "Wait__dark" "Wait__light"};%#ok<CLARRSTR> 
+%% common settings
+root_dir = "..\..\..\dataset\lord2\train";
+%% settings 1
+input_dir = root_dir + "\build\1\*.edf";
+export_dir = root_dir + "\pre2\1";
+markers = {"Marker__dark" "Marker__light"};
+%% settings 2
+input_dir = root_dir + "\build\2\*.edf";
+export_dir = root_dir + "\pre2\2";
+markers = {"Wait__dark" "Wait__light"}; %#ok<*CLARRSTR> 
+%% preprocessing
+filelst = dir(input_dir);
 sz = size(filelst);
-disp(sz(1));
-%% 
-for i = 1:sz
-    f = filelst(i);
-    preprocessing_eeg(f.folder + "\" + f.name,"..\..\..\dataset\lord2\train\pre")
+sz = sz(1);
+disp(sz);
+for j = 1:sz
+    f = filelst(j);
+    preprocessing_eeg(f.folder + "\" + f.name,export_dir,markers)
 end
-function preprocessing_eeg(full_filepath,export_dir_path)
-    global markers;
+function preprocessing_eeg(full_filepath,export_dir_path,markers)
     [filepath,filename,ext] = fileparts(full_filepath);
     eeg = pop_biosig({convertStringsToChars(filepath + "\" + filename + ext)});
     %%フィルタリング

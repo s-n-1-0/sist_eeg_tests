@@ -12,7 +12,10 @@ with EdfReader(f"{DATASET_DIR_PATH}/edf/{edfcsv_filenames[0,0]}") as er:
     fs = int(myedf.get_fs(er))
 
 # %% merge csv,edf
-filenames = myedflab.merge_all_csv2edf(file_settings,label_header_name="LorD",marker_names=["Marker","Wait"],marker_offset=None)
+file_settings.build_dir_path = f"{file_settings.root_path}/build/1"
+filenames = myedflab.merge_all_csv2edf(file_settings,label_header_name="LorD",marker_names=["Marker"],marker_offset=None)
+file_settings.build_dir_path = f"{file_settings.root_path}/build/2"
+_ = myedflab.merge_all_csv2edf(file_settings,label_header_name="LorD",marker_names=["Wait"],marker_offset=None)
 filenames
 
 # %% set to hdf
@@ -21,15 +24,16 @@ def after_preprocessing(signals:np.ndarray,label:str):
     if label != "dark" and label != "light":
         return signals
     return signals_standardization(signals)
-for i ,filename in enumerate(filenames):
-    set2.merge_set2hdf(f"{file_settings.root_path}/pre/{filename}.set",
-    export_path,
-    marker_names=["Marker","Wait"],
-    labels=["dark","light"],
-    is_groupby=True,
-    is_overwrite= i != 0,
-    preprocessing_func=after_preprocessing
-    )
+for i in range(2):
+    for j ,filename in enumerate(filenames):
+        set2.merge_set2hdf(f"{file_settings.root_path}/pre2/{i+1}/{filename}.set",
+        export_path,
+        marker_names=[("Marker" if i == 0 else "Wait")],
+        labels=["dark","light"],
+        is_groupby=True,
+        is_overwrite= not (i == 0 and j == 0),
+        preprocessing_func=after_preprocessing
+        )
 # %% edf to hdf
 export_path = f"{DATASET_DIR_PATH}/ex.h5"
 def before_preprocessing(signals:list[np.ndarray]):

@@ -75,7 +75,7 @@ reduce_lr = ReduceLROnPlateau(
                         min_lr=0.00001
                 )
 history = model.fit(tgen,
-        epochs=1000, 
+        epochs=500, 
         batch_size=batch_size,
         validation_data= vgen,
         callbacks=[reduce_lr])

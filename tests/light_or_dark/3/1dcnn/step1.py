@@ -13,7 +13,7 @@ from utils.history import save_history,plot_history
 from sklearn.metrics import confusion_matrix
 import pandas as pd
 # %% split dataset
-step1_dataset,step2_dataset = split_dataset(dataset_path,1430)
+step1_dataset,step2_dataset = split_dataset(dataset_path,800)
 # %%
 model = Sequential()
 model.add(Conv1D(
@@ -70,7 +70,7 @@ reduce_lr = ReduceLROnPlateau(
                         min_lr=0.00001
                 )
 history = model2.fit(tgen,
-        epochs=20, 
+        epochs=200, 
         batch_size=batch_size,
         validation_data= vgen,
         callbacks=[reduce_lr])
