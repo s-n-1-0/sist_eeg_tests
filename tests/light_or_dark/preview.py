@@ -4,7 +4,7 @@ import h5py
 import numpy as np
 import matplotlib.pyplot as plt
 from utils import signals_standardization
-path = "./dataset/lord2/ex.h5"
+path = "./dataset/lord2/train/ex.h5"
 group_path = "annotations/Marker"
 # %% データセット数
 
