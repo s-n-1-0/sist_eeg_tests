@@ -1,13 +1,10 @@
 # %%
-import sys
-import os
 import tensorflow as tf
 from keras.models import Sequential
 from keras.callbacks import ReduceLROnPlateau
 from keras.layers import Dense,Activation,Dropout,Conv1D,MaxPooling1D,Flatten,BatchNormalization
 import numpy as np
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from generator import make_generators,split_dataset
+from test1_generator import make_generators,split_dataset
 from common import *
 from utils.history import save_history,plot_history
 from sklearn.metrics import confusion_matrix
