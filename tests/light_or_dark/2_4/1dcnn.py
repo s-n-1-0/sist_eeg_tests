@@ -56,7 +56,7 @@ output_shapes=([None,back,ch], [None])
 def take6_pick(signal:np.ndarray,mode:bool):
     return signal[:,offset:back+offset]
     #return signal[:,:back]
-tgen,vgen = make_generators("./dataset/lord2/train/ex.h5",batch_size,-432,label_func=lambda label: int(label == "dark"),pick_func=take6_pick)
+tgen,vgen = make_generators("./dataset/lord2/train/ex.h5",batch_size,-432,label_func=lambda label: int(label == "c"),pick_func=take6_pick)
 def from_generator(gen):
     return tf.data.Dataset.from_generator(gen,output_types=(np.float32,np.float32), output_shapes=output_shapes)
 tgen = from_generator(tgen)
@@ -100,7 +100,7 @@ ans_r = [c == a  for c,a in zip(y_pred,y_true)]
 print(ans_r.count(True)/len(ans_r))
 
 # %%
-test_gen = from_generator(make_test_generator(path="./dataset/lord2/test/wy/ex.h5",batch_size = batch_size,label_func=lambda label: int(label == "dark"),pick_func=take6_pick))
+test_gen = from_generator(make_test_generator(path="./dataset/lord2/test/wy/ex.h5",batch_size = batch_size,label_func=lambda label: int(label == "c"),pick_func=take6_pick))
 score = model.evaluate(test_gen, verbose=1)
 print("Test score", score[0])
 print("Test accuracy", score[1])
