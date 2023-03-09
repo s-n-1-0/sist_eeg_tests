@@ -19,6 +19,10 @@ filenames = myedflab.merge_all_csv2edf(file_settings,label_header_name="LorD",ma
 filenames
 
 # %% set to hdf
+dark_count = 0
+light_count = 0
+c = 0
+nc = 0
 def merge_set2hdf(edf_path:str,
     export_path:str,
     key_type:str,
@@ -40,7 +44,16 @@ def merge_set2hdf(edf_path:str,
     epochs = mne.io.read_epochs_eeglab(edf_path)
     with h5py.File(export_path, mode='r+' if is_overwrite else 'w') as f:
         def write_hdf(marker_name:str,label:str,new_label:str):
+            global dark_count, light_count,c,nc
             data = epochs.get_data(item=f"{marker_name}__{label}")
+            if label == "dark":
+                dark_count += data.shape[0]
+            elif label == "light":
+                light_count += data.shape[0]
+            if new_label == "c":
+                c += data.shape[0]
+            elif new_label == "nc":
+                nc += data.shape[0]
             ann_group = f.require_group("/annotations")
             for idx in range(data.shape[0]):
                 data_ch = data[idx,:,:]
@@ -75,6 +88,10 @@ for i ,filename in enumerate(filenames):
     is_groupby=True,
     is_overwrite= i != 0,
     )
+print(f"dark : {dark_count}")
+print(f"light : {light_count}")
+print(f"counts : {c}")
+print(f"not counts : {nc}")
 # %% edf to hdf
 export_path = f"{DATASET_DIR_PATH}/ex.h5"
 def before_preprocessing(signals:list[np.ndarray]):
