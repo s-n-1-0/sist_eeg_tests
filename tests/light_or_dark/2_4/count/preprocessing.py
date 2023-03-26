@@ -1,13 +1,10 @@
 # %%
-import os
 from typing import Callable
-from labedf import csv2,edf2
 import numpy as np
-from scipy import signal
 from pyedflib import EdfReader
 import mne
 import h5py
-from utils import edf as myedf,edflab as myedflab,signals_standardization,lowpass_filter
+from utils import edf as myedf,edflab as myedflab,signals_standardization
 DATASET_DIR_PATH = "./dataset/lord2/train"
 file_settings = myedflab.MergeAllCsv2EdfFileSettings(DATASET_DIR_PATH + "/ペア.csv",list_encoding="ansi")
 edfcsv_filenames = file_settings.get_edfcsv_filenames()
@@ -74,11 +71,11 @@ def merge_set2hdf(edf_path:str,
                 new_label = "c" if (label == "dark" and key_type == "dc") or \
                 (label == "light" and key_type == "lc") else "nc"
                 write_hdf(marker_name,label,new_label)
-def after_preprocessing(signals:np.ndarray,label:str):
+def preprocessing(signals:np.ndarray,label:str):
     if label != "dark" and label != "light":
         return signals
     return signals_standardization(signals)
-export_path = f"{DATASET_DIR_PATH}/ex.h5"
+export_path = f"{DATASET_DIR_PATH}/ex_count.h5"
 for i ,filename in enumerate(filenames):
     dataset_type = filename.split("_")[-1]
     merge_set2hdf(f"{file_settings.root_path}/pre/{filename}.set",
@@ -87,29 +84,11 @@ for i ,filename in enumerate(filenames):
     labels=["dark","light"],
     is_groupby=True,
     is_overwrite= i != 0,
+    #preprocessing_func=preprocessing
     )
 print(f"dark : {dark_count}")
 print(f"light : {light_count}")
 print(f"counts : {c}")
 print(f"not counts : {nc}")
-# %% edf to hdf
-export_path = f"{DATASET_DIR_PATH}/ex.h5"
-def before_preprocessing(signals:list[np.ndarray]):
-    signals = [lowpass_filter(fs,signal,30) for signal in signals]
-    return signals
-def after_preprocessing(signals:np.ndarray,label:str):
-    if label != "dark" and label != "light":
-        return signals
-    #return signals_standardization(signals)
-    return signals
-for i ,filename in enumerate(filenames):
-    edf2.split_annotations_edf2hdf(f"{file_settings.build_dir_path}/{filename}.edf",
-    export_path,
-    is_groupby=True,
-    is_overwrite= i != 0,
-    before_preprocessing_func= before_preprocessing,
-    after_preprocessing_func=after_preprocessing,
-    min_signal_size=500
-    )
 
 # %%

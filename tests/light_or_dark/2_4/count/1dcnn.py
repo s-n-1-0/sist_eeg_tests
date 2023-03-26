@@ -8,6 +8,7 @@ from generator import make_generators,make_test_generator
 from utils.history import save_history,plot_history
 from sklearn.metrics import confusion_matrix
 import pandas as pd
+print("これはカウント分類です!")
 # %% 
 offset = 250
 back = 750
@@ -56,7 +57,7 @@ output_shapes=([None,back,ch], [None])
 def take6_pick(signal:np.ndarray,mode:bool):
     return signal[:,offset:back+offset]
     #return signal[:,:back]
-tgen,vgen = make_generators("./dataset/lord2/train/ex.h5",batch_size,-432,label_func=lambda label: int(label == "c"),pick_func=take6_pick)
+tgen,vgen = make_generators("./dataset/lord2/train/ex_count.h5",batch_size,-432,label_func=lambda label: int(label == "c"),pick_func=take6_pick)
 def from_generator(gen):
     return tf.data.Dataset.from_generator(gen,output_types=(np.float32,np.float32), output_shapes=output_shapes)
 tgen = from_generator(tgen)
@@ -81,7 +82,9 @@ plot_history(history.history,metrics=["binary_accuracy"],is_loss=False)
 save_history(".",history.history)
 
 # %%
-model.save(".\model_e500.h5",save_format="h5")
+model.save("./saves/lord/2_4/count/model.h5",save_format="h5")
+hist_df = pd.DataFrame(history.history)
+hist_df.to_csv('./saves/lord/2_4/count/history.csv')
 # %% predict
 labels = [1, 0]
 _y_pred = model.predict(vgen, verbose=1)
