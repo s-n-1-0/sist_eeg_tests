@@ -8,16 +8,16 @@ def make_generators(path:str,
                     border:int,
                     label_func:Callable[[str],Any],
                     pick_func:Callable[[h5py.Dataset,bool],np.ndarray],
-                    transpose_rule = [0,2,1]):
+                    ):
     with h5py.File(path, 'r') as hf:
-        group = hf["annotations/Marker"]
+        group = hf["total"]
         origin_keys = list(group.keys())
         all_keys = origin_keys[:]
         random.shuffle(all_keys)
     def make_generator(mode:bool):
         def generator():
             with h5py.File(path, 'r') as hf:
-                group = hf["annotations/Marker"]
+                group = hf["total"]
                 if mode:
                     keys  = all_keys[:border]
                     random.shuffle(keys)
@@ -32,7 +32,7 @@ def make_generators(path:str,
                     x.append(pick_func(dataset,mode))
                     y.append(label_func(dataset.attrs["label"]))
                     if count % batch_size == 0:
-                        yield (np.array(x,dtype=np.float32).transpose(*transpose_rule),np.array(y,dtype=np.float32))
+                        yield (np.array(x,dtype=np.float32)[:,:,np.newaxis],np.array(y,dtype=np.float32))
                         x = []
                         y = []
 

@@ -8,10 +8,12 @@ from generator import make_generators,make_test_generator
 from utils.history import save_history,plot_history
 from sklearn.metrics import confusion_matrix
 import pandas as pd
+
+root_path = "//172.16.88.200/private/2221012/MIOnly_FTP_EEG Dataset and OpenBMI Toolbox for Three BCI Paradigms"
 # %% 
-offset = 250
-back = 750
-ch = 10
+offset = 0
+back = 250
+ch = 1
 batch_size = 32
 # %%
 model = Sequential()
@@ -54,9 +56,9 @@ model.compile(loss='binary_crossentropy',
 output_shapes=([None,back,ch], [None])
 
 def take6_pick(signal:np.ndarray,mode:bool):
-    return signal[:,offset:back+offset]
+    return signal[offset:back+offset]
     #return signal[:,:back]
-tgen,vgen = make_generators("./dataset/lord2/train/ex_lord.h5",batch_size,-432,label_func=lambda label: int(label == "dark"),pick_func=take6_pick)
+tgen,vgen = make_generators(f"{root_path}/dataset.h5",batch_size,-432,label_func=lambda label: int(label == "left"),pick_func=take6_pick)
 def from_generator(gen):
     return tf.data.Dataset.from_generator(gen,output_types=(np.float32,np.float32), output_shapes=output_shapes)
 tgen = from_generator(tgen)
@@ -68,7 +70,7 @@ reduce_lr = ReduceLROnPlateau(
                         monitor='val_loss',
                         factor=0.5,
                         patience=4,
-                        min_lr=0.000001
+                        min_lr=0.00001
                 )
 history = model.fit(tgen,
         epochs=300, 
@@ -81,9 +83,9 @@ plot_history(history.history,metrics=["binary_accuracy"],is_loss=False)
 save_history(".",history.history)
 
 # %%
-model.save("./saves/lord/2_4/lord/model.h5",save_format="h5")
+model.save("./saves/3p/model.h5",save_format="h5")
 hist_df = pd.DataFrame(history.history)
-hist_df.to_csv('./saves/lord/2_4/lord/history.csv')
+hist_df.to_csv('./saves/3p/history.csv')
 # %% predict
 labels = [1, 0]
 _y_pred = model.predict(vgen, verbose=1)
@@ -106,4 +108,7 @@ test_gen = from_generator(make_test_generator(path="./dataset/lord2/test/wy/ex.h
 score = model.evaluate(test_gen, verbose=1)
 print("Test score", score[0])
 print("Test accuracy", score[1])
+# %%
+for t in make_generators(f"{root_path}/dataset.h5",batch_size,-432,label_func=lambda label: int(label == "left"),pick_func=take6_pick)[0]():
+    print(t[1])
 # %%
