@@ -1,11 +1,16 @@
 %% 
-filelst = dir("..\..\..\dataset\lord2\train\build\*.edf");
+filelst = dir("MIOnly_FTP_EEG Dataset and OpenBMI Toolbox for Three BCI Paradigms\session1");
+filelst = filelst(endsWith({filelst.name},".mat"));
 sz = size(filelst);
 disp(sz(1));
+
+%%
+fp = filelst(2);
+data = extract_data(fp.folder+"/"+fp.name);
 %% 
 for i = 1:sz
     f = filelst(i);
-    preprocessing_eeg(f.folder + "\" + f.name,"..\..\..\dataset\lord2\train\pre")
+    preprocessing_eeg(f.folder + "\" + f.name,".\pre")
 end
 function preprocessing_eeg(full_filepath,export_dir_path)
     [filepath,filename,ext] = fileparts(full_filepath);
@@ -28,6 +33,16 @@ function preprocessing_eeg(full_filepath,export_dir_path)
     pop_saveset(eeg,"filename",convertStringsToChars(export_dir_path + "\" + filename + ".set"));
 end
 
+%%
+function [ret_train_test_list] = extract_data(path)
+    data = load(path);
+    train_test_list = [data.EEG_MI_train,data.EEG_MI_test];
+    ret_train_test_list = cell(1,2);
+    for i = 1:2
+        td = train_test_list(i);
+        ret_train_test_list{i} = {td.x,td.t};
+    end
+end
 %pop_editset(eeg)
 %eegplot(eeg.data,'srate',500) %srate = fs
 %pop_rejmenu
