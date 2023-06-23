@@ -1,7 +1,7 @@
 %% 
 filelst = dir("MIOnly_FTP_EEG Dataset and OpenBMI Toolbox for Three BCI Paradigms\session1");
 fs = 1000;
-filelst = filelst(endsWith({filelst.name},".mat"));
+filelst = filelst(endsWith({filelst.name},"MI.mat"));
 sz = size(filelst);
 disp(sz(1));
 
@@ -12,7 +12,9 @@ preprocessing_eeg(fp.folder + "/pre/"+fp.name + ".set",data{1},fs)
 %% 
 for i = 1:sz
     f = filelst(i);
-    preprocessing_eeg(f.folder + "\" + f.name,".\pre");
+    disp(f.name)
+    data = extract_data(f.folder+"/"+f.name);
+    preprocessing_eeg(f.folder + "/pre/"+f.name + ".set",data{1},fs)
 end
 function preprocessing_eeg(export_dir_path,data,fs)
     eegdata = data{1}.';%%ch × samples
