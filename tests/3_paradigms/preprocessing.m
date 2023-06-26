@@ -20,21 +20,22 @@ end
 function preprocessing_eeg(export_dir_path,data,fs)
     eegdata = data{1}.';%%ch × samples
     eegindexes = data{2};
-
+    left_indexes = strcmp(data{3}, 'left');
+    right_indexs = strcmp(data{3}, 'right');
     eeg = pop_importdata('dataformat', 'array', 'data', eegdata, 'setname', 'EEG', 'srate', fs);
     % イベントを追加する
-    eeg = eeg_addnewevents(eeg,{eegindexes},{'x'});
+    eeg = eeg_addnewevents(eeg,{eegindexes(left_indexes) eegindexes(right_indexs)},{'left' 'right'});
     % イベント構造を更新する
     %eeg = eeg_checkset(eeg);
     %%ダウンサンプリング
-    eeg = pop_resample(eeg,250);
+    eeg = pop_resample(eeg,500);
     %%フィルタリング
     eeg = pop_eegfiltnew(eeg,1,[]);
     eeg = pop_eegfiltnew(eeg,[],30);
-    eeg = pop_epoch(eeg, {"x"}, [0, 4]);
+    eeg = pop_epoch(eeg, {'left' 'right'}, [0, 4]);
     is_after_reject = 0;%0だとディスプレイ表示のリジェクトする前と母数が一致
     %TODO:一時的に範囲を上げてる
-    eeg = pop_eegthresh(eeg,1,[1:62],-500,500,-1,1.998,0,is_after_reject,0); %"Find abnormal values" default : 100
+    eeg = pop_eegthresh(eeg,1,[1:62],-300,300,-1,1.998,0,is_after_reject,0); %"Find abnormal values" default : 100
     eeg = pop_rejtrend(eeg,1,[1:62],1500,0.5,0.3,0,is_after_reject,0);
     eeg = pop_jointprob(eeg,1,[1:62],5,5,0,is_after_reject,0,0,0);
     eeg = pop_rejkurt(eeg,1,[1:62],5,5,0,is_after_reject,0,0,0);
@@ -53,7 +54,7 @@ function [ret_train_test_list] = extract_data(path)
     ret_train_test_list = cell(1,2);
     for i = 1:2
         td = train_test_list(i);
-        ret_train_test_list{i} = {td.x,td.t};
+        ret_train_test_list{i} = {td.x,td.t,td.y_class};
     end
 end
 %pop_editset(eeg)
