@@ -8,7 +8,8 @@ disp(sz(1));
 %% preview
 fp = filelst(2);
 data = extract_data(fp.folder+"/"+fp.name);
-preprocessing_eeg(fp.folder + "/pre/"+fp.name + ".set",data{1},fs)
+[~,fn,~] = fileparts(fp.folder+"/"+fp.name);
+preprocessing_eeg(fp.folder + "/pre/"+fn + ".set",data{1},fs)
 %% 
 for i = 1:sz
     f = filelst(i);
