@@ -10,14 +10,14 @@ def make_generators(path:str,
                     pick_func:Callable[[h5py.Dataset,bool],np.ndarray],
                     ):
     with h5py.File(path, 'r') as hf:
-        group = hf["total"]
+        group = hf["custom"]
         origin_keys = list(group.keys())
         all_keys = origin_keys[:]
         random.shuffle(all_keys)
     def make_generator(mode:bool):
         def generator():
             with h5py.File(path, 'r') as hf:
-                group = hf["total"]
+                group = hf["custom"]
                 if mode:
                     keys  = all_keys[:border]
                     random.shuffle(keys)
@@ -32,7 +32,7 @@ def make_generators(path:str,
                     x.append(pick_func(dataset,mode))
                     y.append(label_func(dataset.attrs["label"]))
                     if count % batch_size == 0:
-                        yield (np.array(x,dtype=np.float32)[:,:,np.newaxis],np.array(y,dtype=np.float32))
+                        yield (np.array(x,dtype=np.float32).transpose([0,2,1]),np.array(y,dtype=np.float32))
                         x = []
                         y = []
 
