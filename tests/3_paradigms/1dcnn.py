@@ -4,16 +4,16 @@ from keras.models import Sequential
 from keras.callbacks import ReduceLROnPlateau
 from keras.layers import Dense,Activation,Dropout,Conv1D,MaxPooling1D,Flatten,BatchNormalization
 import numpy as np
-from generator import make_generators,make_test_generator
+from generator import RawGeneratorMaker
 from utils.history import save_history,plot_history
 from sklearn.metrics import confusion_matrix
 import pandas as pd
 
-root_path = "//172.16.88.200/private/2221012/MIOnly_FTP_EEG Dataset and OpenBMI Toolbox for Three BCI Paradigms"
+root_path = "D:/Dataset"
 # %% 
 offset = 0
-back = 250
-ch = 1
+back = 500
+ch = 3
 batch_size = 32
 # %%
 model = Sequential()
@@ -55,10 +55,10 @@ model.compile(loss='binary_crossentropy',
             metrics=["binary_accuracy"])
 output_shapes=([None,back,ch], [None])
 
-def take6_pick(signal:np.ndarray,mode:bool):
-    return signal[offset:back+offset]
-    #return signal[:,:back]
-tgen,vgen = make_generators(f"{root_path}/dataset.h5",batch_size,-432,label_func=lambda label: int(label == "left"),pick_func=take6_pick)
+def pick_func(signal:np.ndarray,mode:bool):
+    return signal[12:15,offset:back+offset]
+maker = RawGeneratorMaker(f"{root_path}/3pdataset.h5")
+tgen,vgen = maker.make_generators(batch_size,-432,pick_func=pick_func)
 def from_generator(gen):
     return tf.data.Dataset.from_generator(gen,output_types=(np.float32,np.float32), output_shapes=output_shapes)
 tgen = from_generator(tgen)
@@ -73,7 +73,7 @@ reduce_lr = ReduceLROnPlateau(
                         min_lr=0.00001
                 )
 history = model.fit(tgen,
-        epochs=300, 
+        epochs=50, 
         batch_size=batch_size,
         validation_data= vgen,
         callbacks=[reduce_lr])
@@ -104,11 +104,7 @@ ans_r = [c == a  for c,a in zip(y_pred,y_true)]
 print(ans_r.count(True)/len(ans_r))
 
 # %%
-test_gen = from_generator(make_test_generator(path="./dataset/lord2/test/wy/ex.h5",batch_size = batch_size,label_func=lambda label: int(label == "dark"),pick_func=take6_pick))
+test_gen = from_generator(maker.make_test_generator(batch_size = batch_size,pick_func=pick_func))
 score = model.evaluate(test_gen, verbose=1)
 print("Test score", score[0])
 print("Test accuracy", score[1])
-# %%
-for t in make_generators(f"{root_path}/dataset.h5",batch_size,-432,label_func=lambda label: int(label == "left"),pick_func=take6_pick)[0]():
-    print(t[1])
-# %%
