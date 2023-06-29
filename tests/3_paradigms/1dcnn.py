@@ -58,7 +58,7 @@ output_shapes=([None,back,ch], [None])
 def pick_func(signal:np.ndarray,mode:bool):
     return signal[12:15,offset:back+offset]
 maker = RawGeneratorMaker(f"{root_path}/3pdataset.h5")
-tgen,vgen = maker.make_generators(batch_size,-432,pick_func=pick_func)
+tgen,vgen = maker.make_generators(batch_size,pick_func=pick_func)
 def from_generator(gen):
     return tf.data.Dataset.from_generator(gen,output_types=(np.float32,np.float32), output_shapes=output_shapes)
 tgen = from_generator(tgen)
@@ -104,7 +104,3 @@ ans_r = [c == a  for c,a in zip(y_pred,y_true)]
 print(ans_r.count(True)/len(ans_r))
 
 # %%
-test_gen = from_generator(maker.make_test_generator(batch_size = batch_size,pick_func=pick_func))
-score = model.evaluate(test_gen, verbose=1)
-print("Test score", score[0])
-print("Test accuracy", score[1])
