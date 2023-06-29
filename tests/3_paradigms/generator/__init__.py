@@ -1,1 +1,2 @@
 from .raw_generator import RawGeneratorMaker
+from .psd_generator import PsdGeneratorMaker
