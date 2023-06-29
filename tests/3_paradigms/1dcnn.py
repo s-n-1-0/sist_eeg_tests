@@ -4,12 +4,8 @@ from keras.models import Sequential
 from keras.callbacks import ReduceLROnPlateau
 from keras.layers import Dense,Activation,Dropout,Conv1D,MaxPooling1D,Flatten,BatchNormalization
 import numpy as np
-from generator import RawGeneratorMaker
-from utils.history import save_history,plot_history
-from sklearn.metrics import confusion_matrix
-import pandas as pd
-
-root_path = "D:/Dataset"
+from generator import RawGeneratorMaker,dataset_dir_path
+from summary import summary
 # %% 
 offset = 0
 back = 500
@@ -57,7 +53,7 @@ output_shapes=([None,back,ch], [None])
 
 def pick_func(signal:np.ndarray,mode:bool):
     return signal[12:15,offset:back+offset]
-maker = RawGeneratorMaker(f"{root_path}/3pdataset.h5")
+maker = RawGeneratorMaker(f"{dataset_dir_path}/3pdataset.h5")
 tgen,vgen = maker.make_generators(batch_size,pick_func=pick_func)
 def from_generator(gen):
     return tf.data.Dataset.from_generator(gen,output_types=(np.float32,np.float32), output_shapes=output_shapes)
@@ -78,29 +74,5 @@ history = model.fit(tgen,
         validation_data= vgen,
         callbacks=[reduce_lr])
 # %%
-plot_history(history.history,metrics=["binary_accuracy"])
-plot_history(history.history,metrics=["binary_accuracy"],is_loss=False)
-save_history(".",history.history)
-
-# %%
-model.save("./saves/3p/model.h5",save_format="h5")
-hist_df = pd.DataFrame(history.history)
-hist_df.to_csv('./saves/3p/history.csv')
-# %% predict
-labels = [1, 0]
-_y_pred = model.predict(vgen, verbose=1)
-y_pred = [1.0 if p[0] > 0.5 else 0 for p in _y_pred]
-x_valid = []
-y_true = []
-for v in vgen:
-    x_valid += list(v[0].numpy())
-    y_true +=list(v[1].numpy())
-cm = confusion_matrix(y_true, y_pred, labels=labels)
-columns_labels = ["pred_" + str(l) for l in labels]
-index_labels = ["true_" + str(l) for l in labels]
-cm = pd.DataFrame(cm,columns=columns_labels, index=index_labels)
-print(cm.to_markdown())
-ans_r = [c == a  for c,a in zip(y_pred,y_true)]
-print(ans_r.count(True)/len(ans_r))
-
+summary(model,history,vgen)
 # %%

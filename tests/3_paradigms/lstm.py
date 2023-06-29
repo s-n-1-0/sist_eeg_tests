@@ -1,11 +1,10 @@
 # %%
 import tensorflow as tf
 from keras.models import Sequential
-from keras.layers import Dense,  LSTM,Activation,Dropout
+from keras.layers import Dense,  LSTM,Activation
 import numpy as np
 from generator import RawGeneratorMaker
-from utils.history import save_history,plot_history
-import pandas as pd
+from summary import summary
 root_path = "//172.16.88.200/private/2221012/MIOnly_FTP_EEG Dataset and OpenBMI Toolbox for Three BCI Paradigms"
 # %% 
 offset = 0
@@ -38,12 +37,4 @@ history = model.fit(tgen,
         validation_data= vgen)
 #predict = model.predict(test, verbose=1)
 # %%
-plot_history(history.history,metrics=["binary_accuracy"])
-plot_history(history.history,metrics=["binary_accuracy"],is_loss=False)
-save_history(".",history.history)
-
-# %%
-model.save("./saves/3p/lstm/model.h5",save_format="h5")
-hist_df = pd.DataFrame(history.history)
-hist_df.to_csv('./saves/3p/lstm/history.csv')
-# %%
+summary(model,history,vgen)
