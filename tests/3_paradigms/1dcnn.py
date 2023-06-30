@@ -74,5 +74,5 @@ history = model.fit(tgen,
         validation_data= vgen,
         callbacks=[reduce_lr])
 # %%
-summary(model,history,vgen,f"./saves/3p/1dcnn_raw_{len(ch_list)}_A")
+summary(model,history,vgen,f"./saves/3p/1dcnn_raw_{len(ch_list)}_{maker.split_mode}")
 # %%

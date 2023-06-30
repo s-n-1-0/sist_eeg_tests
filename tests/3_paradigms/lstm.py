@@ -36,4 +36,4 @@ history = model.fit(tgen,
         validation_data= vgen)
 #predict = model.predict(test, verbose=1)
 # %%
-summary(model,history,vgen,f"./saves/3p/lstm_raw_{len(ch_list)}_A")
+summary(model,history,vgen,f"./saves/3p/lstm_raw_{len(ch_list)}_{maker.split_mode}")
