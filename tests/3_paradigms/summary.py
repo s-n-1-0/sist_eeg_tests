@@ -2,7 +2,11 @@
 import pandas as pd
 from sklearn.metrics import confusion_matrix
 from utils.history import plot_history, save_history
-
+import platform
+def beep(freq, dur=100):
+    if platform.system() == "Windows":
+        import winsound
+        winsound.Beep(freq, dur)
 def summary(model,history,vgen,save_path:str):
     plot_history(history.history,metrics=["binary_accuracy"])
     plot_history(history.history,metrics=["binary_accuracy"],is_loss=False)
@@ -25,3 +29,5 @@ def summary(model,history,vgen,save_path:str):
     print(cm.to_markdown())
     ans_r = [c == a  for c,a in zip(y_pred,y_true)]
     print(ans_r.count(True)/len(ans_r))
+
+    beep(2000,500)
