@@ -6,15 +6,15 @@ from generator import dataset_dir_path,PsdGeneratorMaker
 
 
 # %% 関数化
-
+ch_list = [12, 13, 14, 35, 36, 8, 7, 9, 10, 18, 17, 19, 20]
 def pick_func(signal:np.ndarray,mode:bool):
-    return signal[12:15,31:81]
+    return signal[()][ch_list,31:81]
 
 maker = PsdGeneratorMaker(dataset_dir_path+"/3pdataset.h5")
 tgen,vgen = maker.make_generators(32,pick_func)
 
 def merge_gen(gen):
-    xd = np.zeros((0,50,3))
+    xd = np.zeros((0,50,len(ch_list)))
     yd = np.zeros((0))
     for x,y in gen():
         xd = np.concatenate([xd,x],axis=0)
@@ -40,8 +40,6 @@ predictions = lda.predict(x_valid)
 
 print(predictions)
 
-
-# %%
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 # 混同行列の作成
@@ -61,9 +59,9 @@ print("Class 2 Accuracy:", class2_accuracy)
 
 
 # %%
-"""
 coef = lda.coef_
 intercept = lda.intercept_
-np.save(f"{root_path}/coef",coef)
-np.save(f"{root_path}/intercept",intercept)
-"""
+np.save(f"./saves/3p/lda_psd_{len(ch_list)}_A/coef",coef)
+np.save(f"./saves/3p/lda_psd_{len(ch_list)}_A/intercept",intercept)
+
+# %%

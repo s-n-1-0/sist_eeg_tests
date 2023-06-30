@@ -7,22 +7,22 @@ from sklearn.svm import SVC
 from sklearn.metrics import confusion_matrix, accuracy_score
 
 # %% 関数化
-
+ch_list = [12, 13, 14]#, 35, 36, 8, 7, 9, 10, 18, 17, 19, 20]
 def pick_func(signal:np.ndarray,mode:bool):
-    return signal[12:15,31:81]
+    return signal[()][ch_list,31:81]
 
 maker = PsdGeneratorMaker(dataset_dir_path+"/3pdataset.h5")
 tgen,vgen = maker.make_generators(32,pick_func)
 
 def merge_gen(gen):
-    xd = np.zeros((0,50,3))
+    xd = np.zeros((0,50,len(ch_list)))
     yd = np.zeros((0))
     for x,y in gen():
         xd = np.concatenate([xd,x],axis=0)
         yd = np.concatenate([yd,y],axis=0)
 
     #チャンネル結合
-    #xd = xd.reshape(xd.shape[0],-1)
+    xd = xd.reshape(xd.shape[0],-1)
     return xd,yd
 x_train,y_train = merge_gen(tgen)
 x_valid,y_valid = merge_gen(vgen)
@@ -58,11 +58,4 @@ class2_predictions = predictions[y_valid == 1]
 class2_accuracy = accuracy_score(y_valid[y_valid == 1], class2_predictions)
 print("Class 2 Accuracy:", class2_accuracy)
 
-
 # %%
-"""
-coef = lda.coef_
-intercept = lda.intercept_
-np.save(f"{root_path}/coef",coef)
-np.save(f"{root_path}/intercept",intercept)
-"""

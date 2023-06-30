@@ -10,7 +10,7 @@ from summary import summary
 
 # %% 
 back = 50
-ch = 3
+ch_list = [12, 13, 14]# 35, 36, 8, 7, 9, 10, 18, 17, 19, 20]
 batch_size = 32
 # %%
 model = Sequential()
@@ -41,10 +41,10 @@ model.add(Dense(1,activation="sigmoid"))
 model.compile(loss='binary_crossentropy', 
             optimizer=tf.optimizers.Adam(learning_rate=0.001), #0.000001
             metrics=["binary_accuracy"])
-output_shapes=([None,back,ch], [None])
+output_shapes=([None,back,len(ch_list)], [None])
 
 def pick_func(signal:np.ndarray,mode:bool):
-    return signal[12:15,31:81]
+    return signal[()][ch_list,31:81]
 maker = PsdGeneratorMaker(f"{dataset_dir_path}/3pdataset.h5")
 tgen,vgen = maker.make_generators(batch_size,pick_func=pick_func)
 def from_generator(gen):
@@ -61,10 +61,10 @@ reduce_lr = ReduceLROnPlateau(
                         min_lr=0.00001
                 )
 history = model.fit(tgen,
-        epochs=3, 
+        epochs=50, 
         batch_size=batch_size,
         validation_data= vgen,
         callbacks=[reduce_lr])
 # %%
-summary(model,history,vgen)
+summary(model,history,vgen,f"./saves/3p/1dcnn_psd_{len(ch_list)}_A")
 # %%

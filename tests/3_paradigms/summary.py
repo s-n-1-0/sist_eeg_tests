@@ -3,14 +3,13 @@ import pandas as pd
 from sklearn.metrics import confusion_matrix
 from utils.history import plot_history, save_history
 
-def summary(model,history,vgen):
+def summary(model,history,vgen,save_path:str):
     plot_history(history.history,metrics=["binary_accuracy"])
     plot_history(history.history,metrics=["binary_accuracy"],is_loss=False)
-    save_history(".",history.history)
+    
+    save_history(save_path,history.history)
+    model.save(f"{save_path}/model.h5",save_format="h5")
 
-    model.save("./saves/3p/model.h5",save_format="h5")
-    hist_df = pd.DataFrame(history.history)
-    hist_df.to_csv('./saves/3p/history.csv')
     labels = [1, 0]
     _y_pred = model.predict(vgen, verbose=1)
     y_pred = [1.0 if p[0] > 0.5 else 0 for p in _y_pred]
