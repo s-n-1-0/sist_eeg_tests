@@ -5,11 +5,12 @@ from keras.callbacks import ReduceLROnPlateau
 from keras.layers import Dense,Activation,Dropout,Conv1D,MaxPooling1D,Flatten,BatchNormalization
 import numpy as np
 from generator import RawGeneratorMaker,dataset_dir_path
+from pickfunc import RawPickFuncMaker
 from summary import summary
 # %% 
 offset = 0
-back = 500
-ch_list = [12, 13, 14, 35, 36, 8, 7, 9, 10, 18, 17, 19, 20]
+sample_size = 500
+pfm = RawPickFuncMaker(sample_size)
 batch_size = 32
 # %%
 model = Sequential()
@@ -49,12 +50,10 @@ model.add(Dense(1,activation="sigmoid"))
 model.compile(loss='binary_crossentropy', 
             optimizer=tf.optimizers.Adam(learning_rate=0.001), #0.000001
             metrics=["binary_accuracy"])
-output_shapes=([None,back,len(ch_list)], [None])
+output_shapes=([None,sample_size,len(pfm.ch_list)], [None])
 
-def pick_func(signal:np.ndarray,mode:bool):
-    return signal[()][ch_list,offset:back+offset]
 maker = RawGeneratorMaker(f"{dataset_dir_path}/3pdataset.h5")
-tgen,vgen = maker.make_generators(batch_size,pick_func=pick_func)
+tgen,vgen = maker.make_generators(batch_size,pick_func=pfm.make_pick_func)
 def from_generator(gen):
     return tf.data.Dataset.from_generator(gen,output_types=(np.float32,np.float32), output_shapes=output_shapes)
 tgen = from_generator(tgen)
@@ -74,5 +73,5 @@ history = model.fit(tgen,
         validation_data= vgen,
         callbacks=[reduce_lr])
 # %%
-summary(model,history,vgen,f"./saves/3p/1dcnn_raw_{len(ch_list)}_{maker.split_mode}")
+summary(model,history,vgen,f"./saves/3p/1dcnn_raw_{len(pfm.ch_list)}_{maker.split_mode}")
 # %%

@@ -3,18 +3,16 @@
 import numpy as np
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from generator import dataset_dir_path,PsdGeneratorMaker
-
+from pickfunc import PsdPickFuncMaker
 
 # %% 関数化
-ch_list = [12, 13, 14, 35, 36, 8, 7, 9, 10, 18, 17, 19, 20]
-def pick_func(signal:np.ndarray,mode:bool):
-    return signal[()][ch_list,31:81]
+pfm = PsdPickFuncMaker()
 
 maker = PsdGeneratorMaker(dataset_dir_path+"/3pdataset.h5")
-tgen,vgen = maker.make_generators(32,pick_func)
+tgen,vgen = maker.make_generators(32,pfm.make_pick_func())
 
 def merge_gen(gen):
-    xd = np.zeros((0,50,len(ch_list)))
+    xd = np.zeros((0,50,len(pfm.ch_list)))
     yd = np.zeros((0))
     for x,y in gen():
         xd = np.concatenate([xd,x],axis=0)
@@ -61,7 +59,7 @@ print("Class 2 Accuracy:", class2_accuracy)
 # %%
 coef = lda.coef_
 intercept = lda.intercept_
-np.save(f"./saves/3p/lda_psd_{len(ch_list)}_A/coef",coef)
-np.save(f"./saves/3p/lda_psd_{len(ch_list)}_A/intercept",intercept)
+np.save(f"./saves/3p/lda_psd_{len(pfm.ch_list)}_A/coef",coef)
+np.save(f"./saves/3p/lda_psd_{len(pfm.ch_list)}_A/intercept",intercept)
 
 # %%

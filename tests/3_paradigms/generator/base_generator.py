@@ -59,10 +59,17 @@ class BaseGeneratorMaker():
                     while count < len(keys):
                         dataset = group[keys[count]]
                         count += 1
-                        x.append(pick_func(dataset,mode))
+                        x_list = pick_func(dataset,mode)
+                        if len(x) == 0:
+                            x = [[xx] for xx in x_list]
+                        else:
+                            for i,xx in enumerate(x_list):
+                                x[i].append(xx)
                         y.append(int(dataset.attrs["label"] == "right"))
                         if count % batch_size == 0:
-                            yield (transpose_func(np.array(x,dtype=np.float32)),np.array(y,dtype=np.float32))
+                            ret_x = [transpose_func(i,np.array(x[i],dtype=np.float32)) for i in range(len(x))]
+                            if len(ret_x) == 1: ret_x = ret_x[0]
+                            yield (ret_x,np.array(y,dtype=np.float32))
                             x = []
                             y = []
 
