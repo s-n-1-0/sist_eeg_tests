@@ -68,8 +68,10 @@ class BaseGeneratorMaker():
                         y.append(int(dataset.attrs["label"] == "right"))
                         if count % batch_size == 0:
                             ret_x = [transpose_func(i,np.array(x[i],dtype=np.float32)) for i in range(len(x))]
-                            if len(ret_x) == 1: ret_x = ret_x[0]
-                            yield (ret_x,np.array(y,dtype=np.float32))
+                            if len(ret_x) == 1:
+                                yield (ret_x[0],np.array(y,dtype=np.float32))
+                            else:
+                                yield ({"input_1": ret_x[0], "input_2": ret_x[1]},np.array(y,dtype=np.float32))
                             x = []
                             y = []
 
