@@ -2,7 +2,7 @@
 import tensorflow as tf
 from keras.models import Sequential
 from keras.callbacks import ReduceLROnPlateau
-from keras import layers
+from keras import layers,regularizers
 from keras.constraints import max_norm
 import numpy as np
 from generator import RawGeneratorMaker,dataset_dir_path
@@ -15,7 +15,7 @@ pfm = RawPickFuncMaker(sample_size)
 batch_size = 32
 fs = 500
 
-f1 = 16 #デフォ8
+f1 = 24 #デフォ8
 D = 2
 kern_length = fs//2
 dropout_rate = 0.5
@@ -25,25 +25,25 @@ f2 = int(f1*D)
 ch = len(pfm.ch_list)
 model = Sequential()
 model.add(layers.Conv2D(f1, (1, kern_length), padding='same',
-                        use_bias=False))
+                        use_bias=False, kernel_regularizer=regularizers.l2(l=0.01)))
 model.add(layers.BatchNormalization())
 model.add(layers.DepthwiseConv2D((ch, 1), use_bias=False,
                                 depth_multiplier=D,
-                                depthwise_constraint=max_norm(1.)))
+                                depthwise_constraint=max_norm(1.), kernel_regularizer=regularizers.l2(l=0.01)))
 model.add(layers.BatchNormalization())
 model.add(layers.Activation('elu'))
 model.add(layers.AveragePooling2D((1, 4)))
 model.add(layers.Dropout(dropout_rate))
 
 model.add(layers.SeparableConv2D(f2, (1, kern_length//4),
-                                use_bias=False, padding='same'))
+                                use_bias=False, padding='same', kernel_regularizer=regularizers.l2(l=0.01)))
 model.add(layers.BatchNormalization())
 model.add(layers.Activation('elu'))
 model.add(layers.AveragePooling2D((1, 8)))
 model.add(layers.Dropout(dropout_rate))
-model.add(layers. Flatten(name='flatten'))
+model.add(layers.Flatten(name='flatten'))
 model.add(layers.Dense(1, name='dense',
-                        kernel_constraint=max_norm(norm_rate)))
+                        kernel_constraint=max_norm(norm_rate), kernel_regularizer=regularizers.l2(l=0.01)))
 model.add(layers.Activation('sigmoid'))
 
 model.compile(loss='binary_crossentropy', 
@@ -63,17 +63,21 @@ model.summary()
 reduce_lr = ReduceLROnPlateau(
                         monitor='val_loss',
                         factor=0.5,
-                        patience=4,
+                        patience=20,
                         min_lr=0.00001
                 )
 history = model.fit(tgen,
-        epochs=50, 
+        epochs=200, 
         batch_size=batch_size,
         validation_data= vgen,
         callbacks=[reduce_lr])
 # %%
 summary(model,history,vgen,f"./saves/3p/eegnet_raw_{len(pfm.ch_list)}_{maker.split_mode}")
 # %%
-tgen,vgen = maker.make_generators(batch_size,pick_func=pfm.make_pick_func())
-tgen().__next__()
+history = model.fit(tgen,
+        initial_epoch=200,
+        epochs=500, 
+        batch_size=batch_size,
+        validation_data= vgen,
+        callbacks=[reduce_lr])
 # %%
