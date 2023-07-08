@@ -9,9 +9,9 @@ from generator import RawGeneratorMaker,dataset_dir_path
 from pickfunc import RawPickFuncMaker
 from summary import summary
 # %% 
-offset = 0
-sample_size = 500
-pfm = RawPickFuncMaker(sample_size)
+offset = 500
+sample_size = 1000
+pfm = RawPickFuncMaker(sample_size,2000)
 batch_size = 32
 fs = 500
 
@@ -52,7 +52,7 @@ model.compile(loss='binary_crossentropy',
 output_shapes=([None,len(pfm.ch_list),sample_size,1], [None])
 
 maker = RawGeneratorMaker(f"{dataset_dir_path}/3pdataset.h5")
-tgen,vgen = maker.make_generators(batch_size,pick_func=pfm.make_pick_func())
+tgen,vgen = maker.make_2d_generators(batch_size,pick_func=pfm.make_pick_func(offset))
 def from_generator(gen):
     return tf.data.Dataset.from_generator(gen,output_types=(np.float32,np.float32), output_shapes=output_shapes)
 tgen = from_generator(tgen)
@@ -63,21 +63,15 @@ model.summary()
 reduce_lr = ReduceLROnPlateau(
                         monitor='val_loss',
                         factor=0.5,
-                        patience=20,
-                        min_lr=0.00001
+                        patience=10,
+                        min_lr=0.0000000001
                 )
 history = model.fit(tgen,
-        epochs=200, 
+        epochs=150, 
         batch_size=batch_size,
         validation_data= vgen,
         callbacks=[reduce_lr])
 # %%
 summary(model,history,vgen,f"./saves/3p/eegnet_raw_{len(pfm.ch_list)}_{maker.split_mode}")
-# %%
-history = model.fit(tgen,
-        initial_epoch=200,
-        epochs=500, 
-        batch_size=batch_size,
-        validation_data= vgen,
-        callbacks=[reduce_lr])
+
 # %%

@@ -15,27 +15,25 @@ batch_size = 32
 # %%
 model = Sequential()
 model.add(Conv1D(
-            filters=32,
-            kernel_size= 10,
+            filters=8,
+            kernel_size= 3,
         ))
 model.add(BatchNormalization())
 model.add(Activation("relu"))
 model.add(Dropout(0.4))
 model.add(Conv1D(
-            filters=64,
-            kernel_size= 7,
-            padding='same'
+            filters=16,
+            kernel_size= 2,
         ))
 model.add(BatchNormalization())
 model.add(Activation("relu"))
 model.add(Dropout(0.4))
 model.add(MaxPooling1D(
             pool_size=3,
-            strides=2,
             padding="same"
         ))
 model.add(Flatten())
-model.add(Dense(128,activation="sigmoid"))
+model.add(Dense(16,activation="sigmoid"))
 model.add(Dropout(0.4))
 model.add(Dense(1,activation="sigmoid"))
 model.compile(loss='binary_crossentropy', 
@@ -63,5 +61,4 @@ history = model.fit(tgen,
         validation_data= vgen,
         callbacks=[reduce_lr])
 # %%
-summary(model,history,vgen,f"./saves/3p/1dcnn_psd_{len(pfm.ch_list)}_A")
-# %%
+summary(model,history,vgen,f"./saves/3p/1dcnn_psd_{len(pfm.ch_list)}_{maker.split_mode}")

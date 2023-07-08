@@ -12,7 +12,7 @@ maker = PsdGeneratorMaker(dataset_dir_path+"/3pdataset.h5")
 tgen,vgen = maker.make_generators(32,pfm.make_pick_func())
 
 def merge_gen(gen):
-    xd = np.zeros((0,50,len(pfm.ch_list)))
+    xd = np.zeros((0,13,len(pfm.ch_list)))
     yd = np.zeros((0))
     for x,y in gen():
         xd = np.concatenate([xd,x],axis=0)
@@ -59,7 +59,7 @@ print("Class 2 Accuracy:", class2_accuracy)
 # %%
 coef = lda.coef_
 intercept = lda.intercept_
-np.save(f"./saves/3p/lda_psd_{len(pfm.ch_list)}_A/coef",coef)
-np.save(f"./saves/3p/lda_psd_{len(pfm.ch_list)}_A/intercept",intercept)
+np.save(f"./saves/3p/lda_psd_{len(pfm.ch_list)}_{maker.split_mode}/coef",coef)
+np.save(f"./saves/3p/lda_psd_{len(pfm.ch_list)}_{maker.split_mode}/intercept",intercept)
 
 # %%

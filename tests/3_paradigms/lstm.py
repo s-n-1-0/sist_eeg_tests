@@ -8,13 +8,12 @@ from pickfunc import RawPickFuncMaker
 from summary import summary
 # %% 
 offset = 500
-back = 1000
-pfm = RawPickFuncMaker(back)
+back = 500
+pfm = RawPickFuncMaker(back,2000)
 batch_size = 32
 # %%
 model = Sequential()
-model.add(LSTM(64,return_sequences=True,dropout=0.5))
-model.add(LSTM(32,dropout=0.5))
+model.add(LSTM(16,dropout=0.5))
 model.add(Dense(1))
 model.add(Activation("sigmoid"))
 model.compile(loss='binary_crossentropy', 

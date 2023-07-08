@@ -5,11 +5,15 @@ class BasePickFuncMaker():
         self.ch_list = [12, 13, 14, 35, 36, 8, 7, 9, 10, 18, 17, 19, 20]
 
 class RawPickFuncMaker(BasePickFuncMaker):
-    def __init__(self,sample_size:int) -> None:
+    def __init__(self,sample_size:int,max_sample_size) -> None:
         super().__init__()
         self.sample_size = sample_size
-    def make_pick_func(self,offset = 0):
-        def pick_func(signal: h5py.Dataset, _: bool):
+        self.max_sample_size = max_sample_size
+    def make_pick_func(self,offset = 0,is_random_valid:bool = False):
+        def pick_func(signal: h5py.Dataset, is_train: bool):
+            if not is_train and is_random_valid:
+                random_offset = random.randint(0,self.max_sample_size-self.sample_size)
+                return [signal[()][self.ch_list,random_offset:self.sample_size+random_offset]]
             return [signal[()][self.ch_list,offset:self.sample_size+offset]]
         return pick_func
     
@@ -31,19 +35,20 @@ class MultiRawPickFuncMaker(BasePickFuncMaker):
             rest = signal.parent.parent.parent[f"rest/{session}/{subject}"][()][self.ch_list,rest_offset:self.rest_sample_size+rest_offset]
             return [rest,signal[()][self.ch_list,hand_offset:self.hand_sample_size+hand_offset]]
         return pick_func
-    def make_random_pick_func(self,min_sample_size:int,max_sample_size:int,rest_offset=0):
+    def make_random_pick_func(self,min_sample_size:int,max_sample_size:int):
         def pick_func(signal: h5py.Dataset, _: bool):
             session = signal.attrs["session"]
             subject = signal.attrs["subject"]
-            rest = signal.parent.parent.parent[f"rest/{session}/{subject}"][()][self.ch_list,rest_offset:self.rest_sample_size+rest_offset]
+            rest_random_offset = random.randint(5000,20000)
+            rest = signal.parent.parent.parent[f"rest/{session}/{subject}"][()][self.ch_list,rest_random_offset:self.rest_sample_size+rest_random_offset]
             random_offset = random.randint(min_sample_size,max_sample_size-self.hand_sample_size)
             return [rest,signal[()][self.ch_list,random_offset:self.hand_sample_size+random_offset]]
         return pick_func
 class PsdPickFuncMaker(BasePickFuncMaker):
     def __init__(self) -> None:
         super().__init__()
-        self.psd_size = 50
+        self.psd_size = 13
     def make_pick_func(self):
         def pick_func(signal:h5py.Dataset,_:bool):
-            return [signal[()][self.ch_list,31:81]]
+            return [signal[()][self.ch_list,8:21]]
         return pick_func

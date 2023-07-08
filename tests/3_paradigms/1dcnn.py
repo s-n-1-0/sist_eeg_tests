@@ -8,9 +8,9 @@ from generator import RawGeneratorMaker,dataset_dir_path
 from pickfunc import RawPickFuncMaker
 from summary import summary
 # %% 
-offset = 0
+offset = 500
 sample_size = 500
-pfm = RawPickFuncMaker(sample_size)
+pfm = RawPickFuncMaker(sample_size,2000)
 batch_size = 32
 # %%
 model = Sequential()
@@ -53,7 +53,7 @@ model.compile(loss='binary_crossentropy',
 output_shapes=([None,sample_size,len(pfm.ch_list)], [None])
 
 maker = RawGeneratorMaker(f"{dataset_dir_path}/3pdataset.h5")
-tgen,vgen = maker.make_generators(batch_size,pick_func=pfm.make_pick_func)
+tgen,vgen = maker.make_generators(batch_size,pick_func=pfm.make_pick_func(offset))
 def from_generator(gen):
     return tf.data.Dataset.from_generator(gen,output_types=(np.float32,np.float32), output_shapes=output_shapes)
 tgen = from_generator(tgen)

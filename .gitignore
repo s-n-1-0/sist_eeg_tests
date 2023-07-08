@@ -12,3 +12,4 @@ dataset/*
 **/*.h5
 **/*.asv
 **/*.set
+saves/3p/**
