@@ -44,7 +44,7 @@ model.add(MaxPooling1D(
             padding="same"
         ))
 model.add(Flatten())
-model.add(Dense(128,activation="sigmoid"))
+model.add(Dense(128,activation="sigmoid"))#note : not relu 何故か学習が進まない
 model.add(Dropout(0.4))
 model.add(Dense(1,activation="sigmoid"))
 model.compile(loss='binary_crossentropy', 
