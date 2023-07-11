@@ -1,5 +1,6 @@
 import h5py
 import random
+import numpy as np
 class BasePickFuncMaker():
     def __init__(self) -> None:
         self.ch_list = [12, 13, 14, 35, 36, 8, 7, 9, 10, 18, 17, 19, 20]
@@ -51,4 +52,15 @@ class PsdPickFuncMaker(BasePickFuncMaker):
     def make_pick_func(self):
         def pick_func(signal:h5py.Dataset,_:bool):
             return [signal[()][self.ch_list,8:21]]
+        return pick_func
+class DwtPickFuncMaker(BasePickFuncMaker):
+    def __init__(self) -> None:
+        super().__init__()
+    def make_pick_func(self):
+        def pick_func(dataset:h5py.Dataset,_:bool):
+            signal = dataset[()][self.ch_list,:,:]
+            s1 = signal[:,0,:65] #65dwtの元のサイズ
+            s2 = signal[:,1,:130]
+            signal = np.concatenate([s1,s2],axis=1)
+            return [signal]
         return pick_func
