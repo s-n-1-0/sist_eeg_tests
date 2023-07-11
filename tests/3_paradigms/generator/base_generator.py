@@ -1,6 +1,6 @@
 # %%
 import random
-from typing import Any, Callable
+from typing import Any, Callable,Union
 import h5py
 import numpy as np
 
@@ -42,7 +42,8 @@ class BaseGeneratorMaker():
             self,
             batch_size:int,
             pick_func:Callable[[h5py.Dataset,bool],np.ndarray],
-            transpose_func:Callable[[np.ndarray],np.ndarray]
+            transpose_func:Callable[[np.ndarray],np.ndarray],
+            label_func:Callable[[h5py.Dataset],Union[int,np.ndarray]] = lambda dataset:int(dataset.attrs["label"] == "right")
             ):
         def make_generator(mode:bool):
             def generator():
@@ -65,7 +66,7 @@ class BaseGeneratorMaker():
                         else:
                             for i,xx in enumerate(x_list):
                                 x[i].append(xx)
-                        y.append(int(dataset.attrs["label"] == "right"))
+                        y.append(int(label_func(dataset)))
                         if count % batch_size == 0:
                             ret_x = [transpose_func(i,np.array(x[i],dtype=np.float32)) for i in range(len(x))]
                             if len(ret_x) == 1:
