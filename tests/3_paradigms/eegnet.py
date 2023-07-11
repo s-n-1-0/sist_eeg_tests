@@ -10,7 +10,7 @@ from pickfunc import RawPickFuncMaker
 from summary import summary
 # %% 
 offset = 500
-sample_size = 1000
+sample_size = 500
 pfm = RawPickFuncMaker(sample_size,2000)
 batch_size = 32
 fs = 500
