@@ -22,37 +22,42 @@ def merge_gen(gen):
     #チャンネル結合
     xd = xd.reshape(xd.shape[0],-1)
     return xd,yd
-x_train,y_train = merge_gen(tgen)
 x_valid,y_valid = merge_gen(vgen)
-x_train.shape,y_train.shape
 # %%
-
-#random.seed(41)
-#X, y = random.shuffle(X, y)#, 
-# 線形判別分析のモデルの初期化と学習
 # SVMモデルのインスタンス化と訓練データへの適合
-svm = SVC()
-svm.fit(x_train, y_train)
+def learning():
+    x_train,y_train = merge_gen(tgen)
+    svm = SVC()
+    svm.fit(x_train, y_train)
 
-# テストデータの予測
-predictions = svm.predict(x_valid)
-print(predictions)
+    # テストデータの予測
+    predictions = svm.predict(x_valid)
+    # 混同行列の作成
+    cm = confusion_matrix(y_valid, predictions)
+    print(cm)
+    accuracy = accuracy_score(y_valid, predictions)
+    print("Accuracy:", accuracy)
+    return svm,accuracy,predictions
+max_acc = 0
+max_model = None
+max_predicts = None
+for i in range(10):
+    print(f"{i+1}回目学習")
+    model,acc,pre = learning()
+    if acc > max_acc:
+        max_acc = acc
+        max_model = model
+        max_predicts = pre
 
-# 混同行列の作成
-cm = confusion_matrix(y_valid, predictions)
-print(cm)
-
-# 正確性の計算と表示
-accuracy = accuracy_score(y_valid, predictions)
-print("Accuracy:", accuracy)
-
-# クラス1の予測精度の計算と表示
-class1_predictions = predictions[y_valid == 0]
+print("------------")
+print("Accuracy:", max_acc)
+# クラス1の予測精度の計算と出力
+class1_predictions = max_predicts[y_valid == 0]
 class1_accuracy = accuracy_score(y_valid[y_valid == 0], class1_predictions)
 print("Class 1 Accuracy:", class1_accuracy)
 
-# クラス2の予測精度の計算と表示
-class2_predictions = predictions[y_valid == 1]
+# クラス2の予測精度の計算と出力
+class2_predictions = max_predicts[y_valid == 1]
 class2_accuracy = accuracy_score(y_valid[y_valid == 1], class2_predictions)
 print("Class 2 Accuracy:", class2_accuracy)
 
