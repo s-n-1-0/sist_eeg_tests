@@ -2,7 +2,7 @@
 # %%
 import numpy as np
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-from generator import dataset_dir_path,PsdGeneratorMaker
+from generator import dataset_dir_path,PsdGeneratorMaker,merge_gen
 from pickfunc import PsdPickFuncMaker
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
@@ -11,21 +11,11 @@ pfm = PsdPickFuncMaker()
 
 maker = PsdGeneratorMaker(dataset_dir_path+"/3pdataset.h5")
 tgen,vgen = maker.make_generators(32,pfm.make_pick_func())
-
-def merge_gen(gen):
-    xd = np.zeros((0,13,len(pfm.ch_list)))
-    yd = np.zeros((0))
-    for x,y in gen():
-        xd = np.concatenate([xd,x],axis=0)
-        yd = np.concatenate([yd,y],axis=0)
-
-    #チャンネル結合
-    xd = xd.reshape(xd.shape[0],-1)
-    return xd,yd
-x_valid,y_valid = merge_gen(vgen)
+init_shape = (0,13*len(pfm.ch_list))
+x_valid,y_valid = merge_gen(vgen,init_shape)
 # %%
 def learning():
-    x_train,y_train = merge_gen(tgen)
+    x_train,y_train = merge_gen(tgen,init_shape)
     lda = LinearDiscriminantAnalysis() # SWLDA(shrinkage=0.5)
     lda.fit(x_train, y_train)
 
@@ -66,5 +56,5 @@ coef = max_model.coef_
 intercept = max_model.intercept_
 np.save(f"./saves/3p/max_lda_psd_{len(pfm.ch_list)}_{maker.split_mode}/coef",coef)
 np.save(f"./saves/3p/max_lda_psd_{len(pfm.ch_list)}_{maker.split_mode}/intercept",intercept)
-
+print(f"{len(pfm.ch_list)}_{maker.split_mode}")
 # %%
