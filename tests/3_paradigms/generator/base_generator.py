@@ -5,7 +5,7 @@ import h5py
 import numpy as np
 
 class BaseGeneratorMaker():
-    def __init__(self,hdf_path:str,group_name:str) -> None:
+    def __init__(self,hdf_path:str,group_name:str,istest:bool = False) -> None:
         self.hdf_path = hdf_path
         with h5py.File(hdf_path, 'r') as hf:
             group = hf["prepro/"+group_name]
@@ -13,26 +13,32 @@ class BaseGeneratorMaker():
             #random.shuffle(shuffled_keys)
             train_keys = []
             vaild_keys = []
-            if True:
-                print("被験者別モード")
-                for sk in origin_keys[:]:
-                    subject = group[sk].attrs["subject"]
-                    if subject < 50:
-                        train_keys.append(sk)
-                    else:
-                        vaild_keys.append(sk)
-                self.split_mode = "A"
+            if istest:
+                vaild_keys = origin_keys[:]
             else:
-                print("一部セッション別モード")
-                shuffled_keys = origin_keys[:]
-                random.shuffle(shuffled_keys)
-                for sk in shuffled_keys:
-                    session = group[sk].attrs["session"]
-                    if session == 2 and len(vaild_keys) < 700:
-                        vaild_keys.append(sk)
-                    else:
-                        train_keys.append(sk)
-                self.split_mode = "B"
+                if True:
+                    print("被験者別モード")
+                    subject_list = np.random.randint(1,55,size=5) #[54,34,21,35,1]
+                    print("検証被験者:" + str(subject_list))
+                    for sk in origin_keys[:]:
+                        subject = group[sk].attrs["subject"]
+                        if subject not in subject_list:
+                            train_keys.append(sk)
+                        else:
+                            vaild_keys.append(sk)
+                    self.split_mode = "A"
+                    self.subject_list = subject_list
+                else:
+                    print("一部セッション別モード")
+                    shuffled_keys = origin_keys[:]
+                    random.shuffle(shuffled_keys)
+                    for sk in shuffled_keys:
+                        session = group[sk].attrs["session"]
+                        if session == 2 and len(vaild_keys) < 700:
+                            vaild_keys.append(sk)
+                        else:
+                            train_keys.append(sk)
+                    self.split_mode = "B"
             self.group_name = group_name
             self.origin_keys = origin_keys
             print(len(train_keys),len(vaild_keys))

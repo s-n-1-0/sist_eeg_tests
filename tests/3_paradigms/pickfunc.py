@@ -19,9 +19,9 @@ class RawPickFuncMaker(BasePickFuncMaker):
         return pick_func
     
     #ランダムの時点を開始地点としてサンプルをとる
-    def make_random_pick_func(self,max_sample_size:int):
+    def make_random_pick_func(self):
         def pick_func(signal: h5py.Dataset, _: bool):
-            random_offset = random.randint(0,max_sample_size-self.sample_size)
+            random_offset = random.randint(0,self.max_sample_size-self.sample_size)
             return [signal[()][self.ch_list,random_offset:self.sample_size+random_offset]]
         return pick_func
 class MultiRawPickFuncMaker(BasePickFuncMaker):
