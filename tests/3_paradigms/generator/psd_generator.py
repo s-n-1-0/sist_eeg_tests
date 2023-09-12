@@ -6,9 +6,9 @@ import h5py
 import numpy as np
 
 class PsdGeneratorMaker(BaseGeneratorMaker):
-    def __init__(self, hdf_path: str) -> None:
+    def __init__(self, hdf_path: str,istest = False) -> None:
         group_name = "psd"
-        super().__init__(hdf_path, group_name)
+        super().__init__(hdf_path, group_name,istest=istest)
     def make_generators(self, batch_size: int,pick_func: Callable[[h5py.Dataset, bool], np.ndarray]):
         def transpose_func(_:int,batch:np.ndarray):
              return batch.transpose([0,2,1])
