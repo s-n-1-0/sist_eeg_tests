@@ -9,14 +9,15 @@ disp(sz(1));
 fp = filelst(2);
 data = extract_data(fp.folder+"/"+fp.name);
 [~,fn,~] = fileparts(fp.folder+"/"+fp.name);
-preprocessing_eeg(fp.folder + "/pre/"+fn + ".set",data{1},fs);
+preprocessing_eeg(fp.folder + "/pres/"+fn + ".set",data{1},fs);
 %% 
-for i = 36:sz
+for i = 1:sz
     f = filelst(i);
     disp(f.name)
     data = extract_data(f.folder+"/"+f.name);
     [~,fn,~] = fileparts(f.folder+"/"+f.name);
-    preprocessing_eeg(f.folder + "/pre/"+fn + ".set",data{1},fs)
+    preprocessing_eeg(f.folder + "/pres/"+fn +"_" +data{1}{3} + ".set",data{1},fs)
+    preprocessing_eeg(f.folder + "/pres/"+fn +"_" +data{2}{3} + ".set",data{2},fs)
 end
 function preprocessing_eeg(export_dir_path,data,fs)
     eegdata = data{1};%%ch × samples
