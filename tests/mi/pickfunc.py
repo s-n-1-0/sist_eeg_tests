@@ -3,7 +3,7 @@ import random
 import numpy as np
 class BasePickFuncMaker():
     def __init__(self) -> None:
-        self.ch_list = [7, 8, 9, 10, 12, 35, 13, 36, 14, 17, 18, 19, 20]
+        self.ch_list = list(range(13))
         #self.ch_list = [12, 13, 14]
 class RawPickFuncMaker(BasePickFuncMaker):
     def __init__(self,sample_size:int,max_sample_size) -> None:

@@ -15,22 +15,29 @@ from eeghdf import EEGHDFUpdater
 import pywt
 from scipy.signal import butter, filtfilt
 root_path = "//172.16.88.200/private/2221012/"
-p3_path = "MIOnly_FTP_EEG Dataset and OpenBMI Toolbox for Three BCI Paradigms"
-#mi52_path = "MI_100295"
-file_paths = glob.glob(root_path + p3_path + "/pres/*.set")
+p3_dir = "MIOnly_FTP_EEG Dataset and OpenBMI Toolbox for Three BCI Paradigms"
+mi52_dir = "MI_100295/mat_data"
 fs = 500
 ch = 14 #C4
 
 
 #%%
 p3_info_list = []
+mi52_info_list = []
+file_paths = glob.glob(root_path + p3_dir + "/pres/*.set")
 for file_path in file_paths:
     file_name = os.path.basename(file_path)
     fns = file_name.split("_")
     session = int(fns[0][4:])
     subject = int(fns[1][4:])
     p3_info_list.append((file_path,session,subject))
-
+file_paths = glob.glob(root_path + mi52_dir + "/pres/*.set")
+for file_path in file_paths:
+    file_name = os.path.basename(file_path)
+    subject,label = file_name.split(".")[0].split("_")
+    subject = int(subject[1:])
+    mi52_info_list.append((file_path,1,subject,label))
+#mi52_info_list
 #%% Preview
 preview_path,session,subject, = p3_info_list[6]
 x = mne.io.read_epochs_eeglab(preview_path).get_data(item=["left","right"])
@@ -74,18 +81,31 @@ def bandpass(data):
     return data
 
 # %% 3p定義
-updater = EEGHDFUpdater(hdf_path=root_path+"/3pdataset.h5",
+p3updater = EEGHDFUpdater(hdf_path=root_path+"/3pdataset.h5",
                         fs=fs,
-                        lables=["left","right"])
+                        lables=["left","right"],dataset_name="3p")
 # %% 3p初期化＆追加
-updater.remove_hdf()
+p3updater.remove_hdf()
 for path,session,subject in p3_info_list:
-    updater.add_eeglab(path,{"session":int(session),"subject":int(subject)})
+    p3updater.add_eeglab(path,{"session":int(session),"subject":int(subject)})
 
+# %% mi52定義
+mi52updater = EEGHDFUpdater(hdf_path=root_path+"/mi52dataset.h5",
+                        fs=fs,
+                        lables=["left","right"],
+                        dataset_name="mi52")
+# %% mi52初期化＆追加
+mi52updater .remove_hdf()
+for path,session,subject,label in mi52_info_list:
+    mi52updater.labels = [label]
+    mi52updater.add_eeglab(path,{"session":int(session),"subject":int(subject)})
 # %%
-updater = EEGHDFUpdater(hdf_path=root_path+"/3pdataset.h5",
+updater = EEGHDFUpdater(hdf_path=root_path+"/merged.h5",
                         fs=fs,
                         lables=["left","right"])
+updater.remove_hdf()
+updater.merge_hdf(p3updater,ch_indexes=[7, 8, 9, 10, 12, 35, 13, 36, 14, 17, 18, 19, 20])
+updater.merge_hdf(mi52updater,ch_indexes=[i - 1 for i in [9,11,46,44,13,12,48,49,50,17,19,56,54]])
 #std
 def prepro_func(x:np.ndarray):
     x = bandpass(x)

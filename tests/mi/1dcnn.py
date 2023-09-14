@@ -13,7 +13,7 @@ from summary import summary
 offset = 500
 sample_size = 750
 pfm = RawPickFuncMaker(sample_size,2000)
-maker = RawGeneratorMaker(f"{dataset_dir_path}/3pdataset.h5")
+maker = RawGeneratorMaker(f"{dataset_dir_path}/merged.h5")
 save_path = f"./saves/3p/1dcnn_raw_{len(pfm.ch_list)}_{maker.split_mode}"#f"./saves/3p/dec2"
 batch_size = 32
 # %%
