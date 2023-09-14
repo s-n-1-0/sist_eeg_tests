@@ -145,6 +145,44 @@ def prepro_func(x:np.ndarray):
 updater.preprocess("dwt",prepro_func)
 
 
-# restデータ統合
-# NOTE: 現在未使用のため削除。過去コミット参照
-
+#%% restデータ統合
+import scipy
+from scipy import signal
+def downsample_multichannel_signal(input_signal, original_rate, target_rate):
+    num_channels = input_signal.shape[0]  # チャネル数
+    num_samples = input_signal.shape[1]  # サンプル数
+    # ダウンサンプリング後のサンプル数を計算
+    target_samples = int(num_samples * (target_rate / original_rate))
+    # 出力信号の配列を作成
+    downsampled_signal = np.zeros((num_channels, target_samples))
+    for channel in range(num_channels):
+        # ダウンサンプリングするチャネルの信号を取得
+        channel_signal = input_signal[channel, :]
+        # ダウンサンプリング
+        downsampled_channel_signal = signal.resample(channel_signal, target_samples)
+        # 出力信号に格納
+        downsampled_signal[channel, :] = downsampled_channel_signal
+    return downsampled_signal
+dataset_size = (54,54)
+train_key = "EEG_MI_train"
+def parse_mat(parent_key,mat_data):
+    data = mat_data[parent_key][0][0]
+    #形式整理
+    for i in range(len(data)):
+        sq_data = data[i].squeeze()
+        if len(sq_data.shape) == 1:
+            data[i] =  sq_data
+        if len(sq_data.shape) == 0:
+            data[i] = sq_data
+    return data
+with h5py.File(root_path+"/3pdataset.h5",mode="r+") as h5:
+    if "rest" in h5:
+        del h5["rest"]
+    rest_group = h5.require_group("rest")
+    for i, size in enumerate(dataset_size):
+        for j in range(size):
+            session = scipy.io.loadmat(f"{root_path}/session{i+1}/sess{(i+1):02}_subj{(j+1):02}_EEG_MI.mat")
+            train_rest = downsample_multichannel_signal(parse_mat(train_key,session)[13].T,1000,500)
+            train_rest =  StandardScaler().fit_transform(train_rest.T).T
+            session_group = rest_group.require_group(str(i+1))
+            session_group.create_dataset(str(j+1),train_rest.shape,data=train_rest)
