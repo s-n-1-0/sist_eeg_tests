@@ -17,6 +17,10 @@ from scipy.signal import butter, filtfilt
 root_path = "//172.16.88.200/private/2221012/"
 p3_dir = "MIOnly_FTP_EEG Dataset and OpenBMI Toolbox for Three BCI Paradigms"
 mi52_dir = "MI_100295/mat_data"
+
+p3_h5_name = "3pdataset.h5"
+mi52_h5_name = "mi52dataset.h5"
+merged_h5_name = "merged.h5"
 fs = 500
 ch = 14 #C4
 
@@ -37,7 +41,7 @@ for file_path in file_paths:
     subject,label = file_name.split(".")[0].split("_")
     subject = int(subject[1:])
     mi52_info_list.append((file_path,1,subject,label))
-#mi52_info_list
+print(len(p3_info_list),len(mi52_info_list))
 #%% Preview
 preview_path,session,subject, = p3_info_list[6]
 x = mne.io.read_epochs_eeglab(preview_path).get_data(item=["left","right"])
@@ -81,7 +85,7 @@ def bandpass(data):
     return data
 
 # %% 3p定義
-p3updater = EEGHDFUpdater(hdf_path=root_path+"/3pdataset.h5",
+p3updater = EEGHDFUpdater(hdf_path=root_path+"/"+p3_h5_name,
                         fs=fs,
                         lables=["left","right"],dataset_name="3p")
 # %% 3p初期化＆追加
@@ -90,7 +94,7 @@ for path,session,subject in p3_info_list:
     p3updater.add_eeglab(path,{"session":int(session),"subject":int(subject)})
 
 # %% mi52定義
-mi52updater = EEGHDFUpdater(hdf_path=root_path+"/mi52dataset.h5",
+mi52updater = EEGHDFUpdater(hdf_path=root_path+"/"+mi52_h5_name,
                         fs=fs,
                         lables=["left","right"],
                         dataset_name="mi52")
@@ -100,7 +104,7 @@ for path,session,subject,label in mi52_info_list:
     mi52updater.labels = [label]
     mi52updater.add_eeglab(path,{"session":int(session),"subject":int(subject)})
 # %%
-updater = EEGHDFUpdater(hdf_path=root_path+"/merged.h5",
+updater = EEGHDFUpdater(hdf_path=root_path+"/"+merged_h5_name,
                         fs=fs,
                         lables=["left","right"])
 updater.remove_hdf()
@@ -123,7 +127,7 @@ updater.preprocess("psd",prepro_func)
 
 # %% DWT prepro
 import pywt
-updater = EEGHDFUpdater(hdf_path=root_path+"/3pdataset.h5",
+updater = EEGHDFUpdater(hdf_path=root_path+"/"+merged_h5_name,
                         fs=fs,
                         lables=["left","right"])
 def dwt(ch_signal):
