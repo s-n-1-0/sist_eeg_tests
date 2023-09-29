@@ -93,30 +93,26 @@ p3updater.remove_hdf()
 for path,session,subject in p3_info_list:
     p3updater.add_eeglab(path,{"session":int(session),"subject":int(subject)})
 
-# %% mi52定義
-mi52updater = EEGHDFUpdater(hdf_path=root_path+"/"+mi52_h5_name,
+# %% mla定義(MLA.h5は別リポジトリで既に構築済み)
+mlaupdater = EEGHDFUpdater(hdf_path=root_path+"/mla.h5",
                         fs=fs,
                         lables=["left","right"],
                         dataset_name="mi52")
-# %% mi52初期化＆追加
-mi52updater .remove_hdf()
-for path,session,subject,label in mi52_info_list:
-    mi52updater.labels = [label]
-    mi52updater.add_eeglab(path,{"session":int(session),"subject":int(subject)})
+
 # %%
-updater = EEGHDFUpdater(hdf_path=root_path+"/"+merged_h5_name,
+updater = EEGHDFUpdater(hdf_path=root_path+"/merged_mla.h5",
                         fs=fs,
                         lables=["left","right"])
 updater.remove_hdf()
 updater.merge_hdf(p3updater,ch_indexes=[7, 8, 9, 10, 12, 35, 13, 36, 14, 17, 18, 19, 20])
-updater.merge_hdf(mi52updater,ch_indexes=[i - 1 for i in [9,11,46,44,13,12,48,49,50,17,19,56,54]])
+updater.merge_hdf(mlaupdater,ch_indexes=list(range(13)))
 #std
 def prepro_func(x:np.ndarray):
     x = bandpass(x)
     return StandardScaler().fit_transform(x.T).T #標準化
 updater.preprocess("std",prepro_func)
 
-#psd
+# %% psd(必要だったら実行)
 def prepro_func(x:np.ndarray):
     x = bandpass(x)
     x = StandardScaler().fit_transform(x.T).T
@@ -125,11 +121,8 @@ def prepro_func(x:np.ndarray):
 updater.preprocess("psd",prepro_func)
 
 
-# %% DWT prepro
+# %% DWT prepro(必要だったら実行)
 import pywt
-updater = EEGHDFUpdater(hdf_path=root_path+"/"+merged_h5_name,
-                        fs=fs,
-                        lables=["left","right"])
 def dwt(ch_signal):
     wavelet = 'db4'  # Daubechies 4 wavelet
     level = pywt.dwt_max_level(len(ch_signal), wavelet)  # maximum feasible level
