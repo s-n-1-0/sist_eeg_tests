@@ -19,8 +19,8 @@ p3_dir = "MIOnly_FTP_EEG Dataset and OpenBMI Toolbox for Three BCI Paradigms"
 mi52_dir = "MI_100295/mat_data"
 
 p3_h5_name = "3pdataset.h5"
-mi52_h5_name = "mi52dataset.h5"
-merged_h5_name = "merged.h5"
+mla_h5_name = "mla.h5"
+merged_h5_name = "merged_mla.h5"
 fs = 500
 ch = 14 #C4
 
@@ -94,13 +94,13 @@ for path,session,subject in p3_info_list:
     p3updater.add_eeglab(path,{"session":int(session),"subject":int(subject)})
 
 # %% mla定義(MLA.h5は別リポジトリで既に構築済み)
-mlaupdater = EEGHDFUpdater(hdf_path=root_path+"/mla.h5",
+mlaupdater = EEGHDFUpdater(hdf_path=root_path+"/"+mla_h5_name,
                         fs=fs,
                         lables=["left","right"],
                         dataset_name="mi52")
 
 # %%
-updater = EEGHDFUpdater(hdf_path=root_path+"/merged_mla.h5",
+updater = EEGHDFUpdater(hdf_path=root_path+"/"+merged_h5_name,
                         fs=fs,
                         lables=["left","right"])
 updater.remove_hdf()
