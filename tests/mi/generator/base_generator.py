@@ -5,14 +5,16 @@ import h5py
 import numpy as np
 
 class BaseGeneratorMaker():
-    def __init__(self,hdf_path:str,group_name:str,istest:bool = False) -> None:
+    def __init__(self,hdf_path:str,
+                 group_name:str,
+                 istest:bool = False,
+                 vaild_keys = []) -> None:
         self.hdf_path = hdf_path
         with h5py.File(hdf_path, 'r') as hf:
             group = hf["prepro/"+group_name]
             origin_keys = list(group.keys())
             #random.shuffle(shuffled_keys)
             train_keys = []
-            vaild_keys = []
             if istest:
                 vaild_keys = origin_keys[:]
             else:
