@@ -1,6 +1,5 @@
 # %%
 import tensorflow as tf
-import keras.backend as K
 from keras.metrics import Recall
 from keras.models import Sequential
 from keras.callbacks import ReduceLROnPlateau,ModelCheckpoint
@@ -10,6 +9,7 @@ import numpy as np
 from generator import RawGeneratorMaker,dataset_dir_path
 from pickfunc import RawPickFuncMaker
 from summary import summary
+from metrics import specificity
 # %% 
 offset = 500
 sample_size = 750
@@ -49,18 +49,7 @@ model.add(layers.Flatten(name='flatten'))
 model.add(layers.Dense(1, name='dense',
                         kernel_constraint=max_norm(norm_rate), kernel_regularizer=regularizers.l2(l=0.01)))
 model.add(layers.Activation('sigmoid'))
-def specificity(y_true, y_pred):
-    # y_true: 正解ラベル
-    # y_pred: 予測ラベル（確率ではなくクラスの予測値）
-    # 予測ラベルをクラスに変換
-    y_pred = K.round(y_pred)
-    # Confusion matrixの計算
-    true_negatives = K.sum(K.round(K.clip((1 - y_true) * (1 - y_pred), 0, 1)))
-    false_positives = K.sum(K.round(K.clip((1 - y_true) * y_pred, 0, 1)))
-    # 特異度の計算
-    specificity = true_negatives / (true_negatives + false_positives + K.epsilon())
 
-    return specificity
 model.compile(loss='binary_crossentropy', 
             optimizer=tf.optimizers.Adam(learning_rate=0.001), #0.000001
             metrics=["binary_accuracy",Recall(),specificity])
