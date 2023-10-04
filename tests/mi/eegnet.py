@@ -10,11 +10,14 @@ from generator import RawGeneratorMaker,dataset_dir_path
 from pickfunc import RawPickFuncMaker
 from summary import summary
 from metrics import specificity
+import pandas as pd
 # %% 
-offset = 500
 sample_size = 750
-pfm = RawPickFuncMaker(sample_size,2000)
-maker = RawGeneratorMaker(f"{dataset_dir_path}/merged.h5")
+csv_path = "./saves/mla_valid.csv"
+valids = list(pd.read_csv(csv_path,header=None).to_numpy()[0,:])
+sample_size = 750
+pfm = RawPickFuncMaker(sample_size)
+maker = RawGeneratorMaker(f"{dataset_dir_path}/merged_mla2.h5",valid_keys=[str(k) for k in valids])
 batch_size = 32
 fs = 500
 

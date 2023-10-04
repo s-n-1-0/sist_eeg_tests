@@ -16,7 +16,14 @@ class BaseGeneratorMaker():
             if istest:
                 vaild_keys = origin_keys[:]
             else:
-                if True:
+                if len(vaild_keys) > 0:
+                    print("検証データ指定モード")
+                    for sk in origin_keys[:]:
+                        dataset = group[sk].attrs["dataset"]
+                        if sk not in vaild_keys:
+                            train_keys.append(sk)
+                    self.split_mode = "B"
+                elif False:
                     print("被験者別モード")
                     subject_list = np.random.randint(1,55,size=5) #[54,34,21,35,1]
                     print("検証被験者:" + str(subject_list))
