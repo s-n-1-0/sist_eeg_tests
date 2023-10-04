@@ -4,25 +4,42 @@ import numpy as np
 class BasePickFuncMaker():
     def __init__(self) -> None:
         self.ch_list = list(range(13))
-        #self.ch_list = [12, 13, 14]
+        #self.ch_list = [12, 13, 14]   
+
 class RawPickFuncMaker(BasePickFuncMaker):
-    def __init__(self,sample_size:int,max_sample_size) -> None:
+    def __init__(self,sample_size:int) -> None:
         super().__init__()
         self.sample_size = sample_size
-        self.max_sample_size = max_sample_size
+    def _get_data(self,dataset:h5py.Dataset):
+        """
+        fix区間とstim区間を分割してデータを返す
+        """
+        dataset_name = dataset.attrs["dataset"]
+        start_index = 0
+        if dataset_name == "3p":
+            start_index = 2000
+        elif dataset_name == "mla":
+            start_index = dataset.attrs["stim_index"]
+        else:
+            ValueError("未知のデータセット")
+        
+        data = dataset[()][self.ch_list,start_index:]
+        return data,None#NOTE:将来的に第2返り値にfixを返すかも
     def make_pick_func(self,offset = 0,is_random_valid:bool = False):
         def pick_func(signal: h5py.Dataset, is_train: bool):
+            data,_ = self._get_data(signal)
             if not is_train and is_random_valid:
-                random_offset = random.randint(0,self.max_sample_size-self.sample_size)
-                return [signal[()][self.ch_list,random_offset:self.sample_size+random_offset]]
-            return [signal[()][self.ch_list,offset:self.sample_size+offset]]
+                random_offset = random.randint(0,data.shape[1]-self.sample_size)
+                return [data[:,random_offset:self.sample_size+random_offset]]
+            return [data[:,offset:self.sample_size+offset]]
         return pick_func
     
     #ランダムの時点を開始地点としてサンプルをとる
     def make_random_pick_func(self):
         def pick_func(signal: h5py.Dataset, _: bool):
-            random_offset = random.randint(0,self.max_sample_size-self.sample_size)
-            return [signal[()][self.ch_list,random_offset:self.sample_size+random_offset]]
+            data,_ = self._get_data(signal)
+            random_offset = random.randint(0,data.shape[1]-self.sample_size)
+            return [data[:,random_offset:self.sample_size+random_offset]]
         return pick_func
 class MultiRawPickFuncMaker(BasePickFuncMaker):
     def __init__(self,hand_sample_size:int,rest_path:str) -> None:

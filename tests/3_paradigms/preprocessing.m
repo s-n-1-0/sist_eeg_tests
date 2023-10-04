@@ -32,7 +32,7 @@ function preprocessing_eeg(export_dir_path,data,fs)
     %%フィルタリング
     eeg = pop_eegfiltnew(eeg,1,[]);
     eeg = pop_eegfiltnew(eeg,[],30);
-    eeg = pop_epoch(eeg, {'left' 'right'}, [0, 4]);
+    eeg = pop_epoch(eeg, {'left' 'right'}, [-2, 4]);
     is_after_reject = 0;%0だとディスプレイ表示のリジェクトする前と母数が一致
     %TODO:一時的に範囲を上げてる
     eeg = pop_eegthresh(eeg,1,[1:62],-300,300,-1,1.998,0,is_after_reject,0); %"Find abnormal values" default : 100
