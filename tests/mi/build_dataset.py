@@ -14,13 +14,13 @@ import mne
 from eeghdf import EEGHDFUpdater
 import pywt
 from scipy.signal import butter, filtfilt
-root_path = "//172.16.88.200/private/2221012/"
+root_path = "C:/Users/2221012/OneDrive - 静岡理工科大学"#//172.16.88.200/private/2221012"
 p3_dir = "MIOnly_FTP_EEG Dataset and OpenBMI Toolbox for Three BCI Paradigms"
 mi52_dir = "MI_100295/mat_data"
 
-p3_h5_name = "3pdataset.h5"
+p3_h5_name = "3pdataset_fix.h5"
 mla_h5_name = "mla.h5"
-merged_h5_name = "merged_mla.h5"
+merged_h5_name = "merged_mla2.h5"
 fs = 500
 ch = 14 #C4
 
@@ -28,7 +28,7 @@ ch = 14 #C4
 #%%
 p3_info_list = []
 mi52_info_list = []
-file_paths = glob.glob(root_path + p3_dir + "/pres/*.set")
+file_paths = glob.glob(root_path + p3_dir + "/pres_rest/*.set")
 for file_path in file_paths:
     file_name = os.path.basename(file_path)
     fns = file_name.split("_")
@@ -97,7 +97,7 @@ for path,session,subject in p3_info_list:
 mlaupdater = EEGHDFUpdater(hdf_path=root_path+"/"+mla_h5_name,
                         fs=fs,
                         lables=["left","right"],
-                        dataset_name="mi52")
+                        dataset_name="mla")
 
 # %%
 updater = EEGHDFUpdater(hdf_path=root_path+"/"+merged_h5_name,
