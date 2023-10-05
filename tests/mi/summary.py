@@ -8,8 +8,8 @@ def beep(freq, dur=100):
         import winsound
         winsound.Beep(freq, dur)
 def summary(model,history,vgen,save_path:str):
-    plot_history(history.history,metrics=["binary_accuracy"])
-    plot_history(history.history,metrics=["binary_accuracy"],is_loss=False)
+    plot_history(history.history,metrics=["binary_accuracy"],bbox_to_anchor=(1.6,1))
+    plot_history(history.history,metrics=["binary_accuracy"],bbox_to_anchor=(1.6,1),is_loss=False)
     
     save_history(save_path,history.history)
     model.save(f"{save_path}/model.h5",save_format="h5")
