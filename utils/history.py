@@ -5,6 +5,7 @@ def plot_history(h:Any,metrics:list[str],
                  is_loss:bool = True,
                  title:str=None,
                  bbox_to_anchor=(1, 1),
+                 ylim = None,
                  loc='upper right'):
                  
     """
@@ -29,6 +30,8 @@ def plot_history(h:Any,metrics:list[str],
         plt.plot(epochs, val_acc, linestyle = "dashdot", label= 'valid '+mn)
     if title is not None:
         plt.title(title,fontname="MS Gothic")
+    if ylim is not None:
+        plt.ylim(ylim)
     plt.xlabel("エポック数(学習回数)" ,fontname="MS Gothic")
     plt.legend(bbox_to_anchor=bbox_to_anchor, loc=loc, borderaxespad=1)
     plt.grid()
