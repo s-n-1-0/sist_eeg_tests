@@ -11,7 +11,7 @@ from matplotlib import pyplot as plt
 import glob
 import os
 import mne
-from eeghdf import EEGHDFUpdater
+from bci_dataset import DatasetUpdater
 import pywt
 from scipy.signal import butter, filtfilt
 root_path = "C:/Users/2221012/OneDrive - 静岡理工科大学"#//172.16.88.200/private/2221012"
@@ -85,24 +85,23 @@ def bandpass(data):
     return data
 
 # %% 3p定義
-p3updater = EEGHDFUpdater(hdf_path=root_path+"/"+p3_h5_name,
-                        fs=fs,
-                        lables=["left","right"],dataset_name="3p")
+p3updater = DatasetUpdater(hdf_path=root_path+"/"+p3_h5_name,
+                        fs=fs,dataset_name="3p")
 # %% 3p初期化＆追加
 p3updater.remove_hdf()
 for path,session,subject in p3_info_list:
-    p3updater.add_eeglab(path,{"session":int(session),"subject":int(subject)})
+    p3updater.add_eeglab(path,
+                        ["left","right"],
+                        {"session":int(session),"subject":int(subject)})
 
 # %% mla定義(MLA.h5は別リポジトリで既に構築済み)
-mlaupdater = EEGHDFUpdater(hdf_path=root_path+"/"+mla_h5_name,
+mlaupdater = DatasetUpdater(hdf_path=root_path+"/"+mla_h5_name,
                         fs=fs,
-                        lables=["left","right"],
                         dataset_name="mla")
 
 # %%
-updater = EEGHDFUpdater(hdf_path=root_path+"/"+merged_h5_name,
-                        fs=fs,
-                        lables=["left","right"])
+updater = DatasetUpdater(hdf_path="C:/Users/2221012/OneDrive - 静岡理工科大学/"+merged_h5_name,
+                        fs=fs)
 updater.remove_hdf()
 updater.merge_hdf(p3updater,ch_indexes=[7, 8, 9, 10, 12, 35, 13, 36, 14, 17, 18, 19, 20])
 updater.merge_hdf(mlaupdater,ch_indexes=list(range(13)))
@@ -132,7 +131,7 @@ def prepro_func(x:np.ndarray):
     x = bandpass(x)
     x = StandardScaler().fit_transform(x.T).T
     w = []
-    for i in range(dx.shape[0]):
+    for i in range(x.shape[0]):
         ch_dx = x[i,500:1000]
         _w = dwt(ch_dx)
         _w = [np.concatenate([__w, np.zeros(len(ch_dx) - len(__w))]) for __w in _w]
