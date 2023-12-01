@@ -3,7 +3,7 @@ import random
 from typing import Any, Callable,Union
 import h5py
 import numpy as np
-
+import csv
 class BaseGeneratorMaker():
     def __init__(self,hdf_path:str,
                  group_name:str,
@@ -93,4 +93,10 @@ class BaseGeneratorMaker():
 
             return generator
         return make_generator(True),make_generator(False)
+    def save_valid_keys(self,save_path):
+        with open(save_path, 'w') as f:
+            data = self.valid_keys
+            writer = csv.writer(f)
+            writer.writerow(data)
+            f.close()
 # %%
