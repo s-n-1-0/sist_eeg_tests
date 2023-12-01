@@ -2,7 +2,7 @@
 import keras
 import tensorflow as tf
 from keras.metrics import Recall
-from keras.callbacks import ReduceLROnPlateau,ModelCheckpoint
+from keras.callbacks import ReduceLROnPlateau,ModelCheckpoint,CSVLogger
 from metrics import specificity
 from generator import RawGeneratorMaker,dataset_dir_path
 from pickfunc import RawPickFuncMaker
@@ -42,11 +42,13 @@ checkpoint = ModelCheckpoint(
                     monitor='val_loss',
                     save_best_only=True,
                 )
+csv_logger = CSVLogger(save_path +'/training_log.csv')
+
 history = model.fit(tgen,
         epochs=2000, 
         batch_size=batch_size,
         validation_data= vgen,
-        callbacks=[reduce_lr,checkpoint])
+        callbacks=[reduce_lr,checkpoint,csv_logger])
 # %%
 summary(model,history,vgen,save_path)
 # %%
