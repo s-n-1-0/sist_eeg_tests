@@ -1,6 +1,7 @@
 # %%
 import tensorflow as tf
 import keras.backend as K
+from keras.utils import plot_model
 from keras.metrics import Recall
 from keras.models import Sequential
 from keras.callbacks import ReduceLROnPlateau,ModelCheckpoint
@@ -69,6 +70,7 @@ tgen = from_generator(tgen)
 vgen = from_generator(vgen)
 model.build(output_shapes[0])
 model.summary()
+plot_model(model,to_file="C://d/1dcnn.png",show_shapes=True)
 # %%
 reduce_lr = ReduceLROnPlateau(
                         monitor='val_loss',

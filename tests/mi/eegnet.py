@@ -11,6 +11,7 @@ from pickfunc import RawPickFuncMaker
 from summary import summary
 from metrics import specificity
 import pandas as pd
+from keras.utils import plot_model
 # %% 
 sample_size = 750
 csv_path = "./saves/mla_valid.csv"
@@ -64,6 +65,7 @@ tgen = from_generator(tgen)
 vgen = from_generator(vgen)
 model.build(output_shapes[0])
 model.summary()
+plot_model(model,to_file="C://d/eegnet.png",show_shapes=True)
 # %%
 reduce_lr = ReduceLROnPlateau(
                         monitor='val_loss',
