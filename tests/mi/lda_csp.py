@@ -1,5 +1,6 @@
 # %%
 import numpy as np
+import pandas as pd
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from mne.decoding import CSP
 from sklearn.pipeline import Pipeline
@@ -7,8 +8,13 @@ from generator import RawGeneratorMaker,dataset_dir_path
 from pickfunc import RawPickFuncMaker
 import numpy as np
 sample_size = 750
+csv_path = "./saves/mla_valid.csv"
+valids = list(pd.read_csv(csv_path,header=None).to_numpy()[0,:])
 pfm = RawPickFuncMaker(sample_size)
+# %% 3パラダイム
 maker = RawGeneratorMaker(f"{dataset_dir_path}/old_3pdataset.h5",valid_keys=[])
+# %% 3パラダイム + 双方向学習)
+maker = RawGeneratorMaker(f"{dataset_dir_path}/merged_mla2.h5",valid_keys=[str(k) for k in valids])
 tgen,vgen = maker.make_generators(None,pick_func=pfm.make_random_pick_func())
 # %%
 def build_csp_lda(n_components:int):
@@ -46,7 +52,7 @@ scores2 = np.load(save_path)
 list(np.mean(scores2,axis=1)),list(np.std(scores2,axis=1))
 
 # %% n=2の時のモデルを作成して保存
-clf = build_csp_lda(n)
+clf = build_csp_lda(2)
 x_train, y_train = tgen().__next__()
 x_train = x_train.transpose([0,2,1]).astype(np.float64)
 x_test,y_test = vgen().__next__()
